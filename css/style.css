@@ -10,8 +10,8 @@
 body {
     display: grid;
     height: 100vh;
-    grid-template-columns: 200px auto;
-    grid-template-areas: 'header header'
+    grid-template-columns: 280px auto;
+    grid-template-areas: ' sidemenu header'
         'sidemenu main'
         'sidemenu footer'
     ;
@@ -24,8 +24,11 @@ header {
 }
 
 aside {
+    border: 2px solid white;
     grid-area: sidemenu;
-    background:#343a40;
+    /* background: #3784d1; */
+    background-image: url(../images/bg-1.avif);
+    color: white;
 
 }
 
@@ -40,14 +43,59 @@ footer {
     border-top: 1px solid;
 }
 
-
-aside ul li {
-    padding: 20px 15px;
+.company-name {
+    /* border: 2px solid blue; */
+    height: 40px;
+    display: flex;
+    gap: 5px;
 }
-aside ul li a{
+
+.company-name h2 {
+    align-self: center;
+}
+
+.menu {
+    /* border: 2px solid white; */
+    width: 250px;
+    height: 550px;
+    margin: 20px 10px;
+}
+
+.admin-logo {
+    /* border: 2px solid white; */
+    width: 100px;
+    height: 100px;
+    /* border-radius: 50%; */
+    font-size: 80px;
+    padding: 5px;
+    margin: 0 auto;
+    margin-top: 10px;
+}
+.admin-options{
+    /* border: 2px solid white; */
+    width: 250px;
+    height: 300px;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+.admin-options ul{
+    list-style: none;
+    text-align: center;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;  
+}
+
+.admin-options ul li a{
     text-decoration: none;
     color: white;
-}
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
+     /* gap:20px;   */
+ }   
 #click-bars {
     display: none;
 }
@@ -59,7 +107,7 @@ aside ul li a{
 .container {
     display: flex;
     justify-content: space-between;
-    flex-wrap: wrap ;
+    flex-wrap: wrap;
 }
 
 .box {
@@ -100,7 +148,8 @@ aside ul li a{
     padding: 8px 0px;
     border-radius: 5px;
 }
-.foot a{
+
+.foot a {
     text-decoration: none;
     color: white;
 }
@@ -108,21 +157,25 @@ aside ul li a{
 .box2 {
     background: #28a745;
 }
-.box2 .right{
+
+.box2 .right {
     border: 2pxs solid black;
     background: #28a745;
 }
+
 .box2 .foot {
     background: #24963e;
 }
 
 .box3 {
-   background-color: #ffc107;
-   color: black;
-}
-.box3 .foot a{
+    background-color: #ffc107;
     color: black;
 }
+
+.box3 .foot a {
+    color: black;
+}
+
 .box3 .foot {
     background: #e5ad06;
 }
@@ -144,12 +197,14 @@ aside ul li a{
     transition: 0.5s;
     overflow: hidden;
 }
-.right .fa{
+
+.right .fa {
     /* background: #17a2b8; */
     color: rgba(0, 0, 0, 0.212);
 }
-.right:hover .fa{
-    transform: scale(1.05,1.05)
+
+.right:hover .fa {
+    transform: scale(1.05, 1.05)
 }
 
 @media screen and (max-width:768px) {
