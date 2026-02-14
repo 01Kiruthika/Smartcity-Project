@@ -13,7 +13,7 @@
 <body>
     <header>
         <div class="company-name">
-           
+
             <!-- <h2>Home</h2>
             <h2>Contact</h2> -->
             <label for="click-bars">
@@ -45,13 +45,48 @@
 
     <main>
         <h1>Products</h1>
+        <div class="product-form">
+            <form action="">
+                <label for="">Enter Product Image URL:</label><br>
+                <input type="url" id="url"><br>
+                <span id="urlerror"></span><br>
 
-        
+
+                <label for="">Enter Product Name:</label><br>
+                <input type="text" id="PName"><br>
+                <span id="nameerror"></span><br>
+
+
+                <label for="">Enter price:</label><br>
+                <input type="number" id="price"><br>
+                <span id="Priceerror"></span><br>
+
+
+                <label for="">Enter Stock:</label><br>
+                <input type="number" id="stock"><br>
+                <span id="Stockerror"></span><br>
+
+
+                <label for="">Enter Offer:</label><br>
+                <input type="number" id="offer"><br>
+                <span id="Offerror"></span><br>
+
+                <div class="Pro-btn">
+                    <button type="submit" onclick="sub()" class="pbtn">Submit</button>
+
+                </div>
+            </form>
+        </div>
+
+
     </main>
     <footer>
         footer
     </footer>
 
+
+
+    <script src="script/script.js"></script>
 </body>
 
 </html>

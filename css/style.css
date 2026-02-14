@@ -71,7 +71,8 @@ footer {
     margin: 0 auto;
     margin-top: 10px;
 }
-.admin-options{
+
+.admin-options {
     /* border: 2px solid white; */
     width: 250px;
     height: 300px;
@@ -79,23 +80,24 @@ footer {
     margin-top: 20px;
 }
 
-.admin-options ul{
+.admin-options ul {
     list-style: none;
     text-align: center;
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 40px;  
+    gap: 40px;
 }
 
-.admin-options ul li a{
+.admin-options ul li a {
     text-decoration: none;
     color: white;
     display: flex;
     flex-direction: row;
     gap: 50px;
-     /* gap:20px;   */
- }   
+    /* gap:20px;   */
+}
+
 #click-bars {
     display: none;
 }
@@ -205,6 +207,51 @@ footer {
 
 .right:hover .fa {
     transform: scale(1.05, 1.05)
+}
+
+
+
+
+/* Product page */
+.product-form {
+    border: 2px solid;
+    width: 380px;
+    height: 450px;
+    background-color: teal;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: -6px 6px 20px 0px black;
+    margin-top: 10px;
+}
+
+.product-form input {
+    outline: none;
+    width: 300px;
+    border-radius: 5px;
+    border: none;
+    padding: 5px;
+    margin: 5px;
+}
+
+.product-form label {
+    margin: 5px;
+
+}
+
+.Pro-btn {
+    /* border: 2px solid; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.pbtn {
+    padding: 8px 20px;
+    border-radius: 3px;
+    border: none;
+
 }
 
 @media screen and (max-width:768px) {
