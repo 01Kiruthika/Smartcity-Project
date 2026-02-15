@@ -20,7 +20,9 @@ body {
 
 header {
     grid-area: header;
-    border-bottom: 1px solid;
+    border-bottom: 2px solid;
+    display: flex;
+    justify-content: end;
 }
 
 aside {
@@ -36,11 +38,12 @@ main {
     grid-area: main;
     overflow: auto;
     padding: 20px;
+
 }
 
 footer {
     grid-area: footer;
-    border-top: 1px solid;
+    border-top: 2px solid;
 }
 
 .company-name {
@@ -53,6 +56,25 @@ footer {
 .company-name h2 {
     align-self: center;
 }
+
+.head-icons {
+    /* border: 2px solid black; */
+    width: 300px;
+    padding: 10px;
+    display: flex;
+}
+
+.head-icons .fa {
+    /* border: 2px solid saddlebrown; */
+    height: 25px;
+    margin: 0px 8px;
+    /* margin-bottom: 0px; */
+}
+
+.time {
+    margin: 0 8px;
+}
+
 
 .menu {
     /* border: 2px solid white; */
@@ -213,8 +235,13 @@ footer {
 
 
 /* Product page */
+.product-main {
+    /* border: 2px solid; */
+    display: flex;
+}
+
 .product-form {
-    border: 2px solid;
+    /* border: 2px solid; */
     width: 380px;
     height: 450px;
     background-color: teal;
@@ -256,6 +283,75 @@ footer {
 
 }
 
+#updateBtn {
+    padding: 8px 20px;
+    border-radius: 3px;
+    border: none;
+    cursor: pointer;
+}
+
+.table-div {
+    /* border: 2px solid; */
+    display: flex;
+    align-self: center;
+
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    border: 2px solid;
+    width: 80px;
+    height: 100px;
+    padding: 5px;
+}
+
+td button {
+    border: 2px solid black;
+    margin: 5px;
+    background-color: black;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+
+img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/*Customer page  */
+.cutomer table {
+    /* border: 2px solid black; */
+    width: 80%;
+    margin: 0 auto;
+    margin-top: 10px;
+    /* border-collapse: collapse; */
+}
+
+.cutomer th,
+td {
+    border: 2px solid black;
+    height: 50px;
+    /* padding: 5px; */
+    text-align: center;
+}
+
+
+/* Footer */
+.footer {
+    /* border: 2px solid; */
+    height: 40px;
+    text-align: center;
+}
+
+
 @media screen and (max-width:768px) {
 
     body {
@@ -266,7 +362,7 @@ footer {
             'main'
             'footer'
         ;
-        grid-template-rows: 60px auto 60px;
+        grid-template-rows: 60px auto 50px;
 
     }
 
@@ -301,14 +397,14 @@ footer {
     .company-name {
         /* border: 2px solid; */
         width: 50px;
-        position: relative;
+        /* position: relative; */
         align-self: center;
     }
 
     .fa-bars {
         position: absolute;
         top: 8px;
-        right: 5px;
+        left: 15px;
         display: block;
         font-size: 30px;
     }
@@ -318,6 +414,25 @@ footer {
         left: 0;
     }
 
+    .head-icons {
+        /* border: 2px solid; */
+        width: 40%;
+        /* justify-content:space-between; */
+        padding: 8px;
+    }
 
+    .head-icons .fa {
+        margin: 0 6px;
+        font-size: 16px;
+    }
 
+    .time {
+        font-size: 18px;
+    }
+
+    .product-main{
+        /* border: 2px solid; */
+        display: flex;
+        flex-direction: column;
+    }
 }
