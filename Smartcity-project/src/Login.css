@@ -1,0 +1,127 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+.main-container {
+  background: #0f172a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* MAIN BOX */
+.container {
+  position: relative;
+  width: 800px;
+  height: 500px;
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+/* FORM */
+.form-container {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 50%;
+  transition: all 0.6s ease;
+}
+/* ===== FIXED FORM POSITION ===== */
+
+.sign-in {
+  left: 0;
+  z-index: 2;
+}
+
+.sign-up {
+  left: 0;
+  opacity: 0;
+  z-index: 1;
+}
+
+/* ===== ACTIVE STATE ===== */
+
+.container.active .sign-in {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.container.active .sign-up {
+  transform: translateX(0);   /* IMPORTANT FIX */
+  opacity: 1;
+  z-index: 5;
+}
+/* FORM STYLE */
+form {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+input {
+  padding: 10px;
+  width: 80%;
+}
+select{
+  padding: 10px;
+  width: 80%;
+}
+button {
+  padding: 10px 20px;
+  background: #38bdf8;
+  border: none;
+  cursor: pointer;
+  color: white;
+}
+
+/* SLIDER */
+.toggle-container {
+  position: absolute;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1000;
+}
+
+.toggle {
+  background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+  height: 100%;
+  width: 200%;
+  position: relative;
+  left: -100%;
+  transition: all 0.6s ease;
+}
+
+.container.active .toggle {
+  transform: translateX(50%);
+}
+
+/* PANELS */
+.toggle-panel {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.toggle-left {
+  left: 0;
+}
+
+.toggle-right {
+  right: 0;
+}

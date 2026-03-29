@@ -1,70 +1,213 @@
-import { useState } from "react";
-import "./App.css";
+import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import "./Login.css";
+import { UserName } from "./App.jsx";
 
 const Authupage = () => {
   const [active, setActive] = useState(false);
+  const { setAdminName, setRole } = useContext(UserName);
+  const navigate = useNavigate();
+
+  // LOGIN STATES
+  const [loginName, setLoginName] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [loginRole, setLoginRole] = useState("");
+
+  // REGISTER STATES
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  // REGISTER
+  const handleRegister = (e) => {
+    e.preventDefault();
+
+    if (phone.length !== 10) {
+      alert("Enter valid 10 digit phone number!");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      alert("Password not match");
+      return;
+    }
+
+    const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
+
+    const userExists = existingUsers.find((user) => user.name === name);
+
+    if (userExists) {
+      alert("User already exists!");
+      return;
+    }
+
+    const newUser = { name, phone, password };
+    existingUsers.push(newUser);
+
+    localStorage.setItem("users", JSON.stringify(existingUsers));
+
+    alert("Registered Successfully!");
+    setActive(false);
+
+    setName("");
+    setPhone("");
+    setPassword("");
+    setConfirmPassword("");
+  };
+
+  // LOGIN
+  const handleLogin = (e) => {
+    e.preventDefault();
+
+    if (
+      loginName === "admin" &&
+      loginPassword === "admin" &&
+      loginRole === "admin"
+    ) {
+      alert("Admin Login Success");
+
+      setAdminName("Admin");
+      setRole("admin");
+
+      navigate("/admin");
+      return;
+    }
+
+    // 🔥 USER LOGIN
+    const users = JSON.parse(localStorage.getItem("users"));
+
+    if (!users || users.length === 0) {
+      alert("No users found! Please register.");
+      return;
+    }
+
+    const validUser = users.find(
+      (user) =>
+        user.name === loginName && user.password === loginPassword
+    );
+
+    if (validUser) {
+      alert("Login Success!");
+
+      setAdminName(validUser.name);
+      setRole(loginRole);
+
+      localStorage.setItem("currentUser", JSON.stringify(validUser));
+    } else {
+      alert("Invalid credentials!");
+    }
+
+    setLoginName("");
+    setLoginPassword("");
+  };
 
   return (
-    <div className={`container ${active ? "active" : ""}`}>
+    <div className="main-container">
 
 
-      <div className="form-container sign-in">
-        <form>
-          <h1>Login</h1>
+      <div className={`container ${active ? "active" : ""}`}>
 
-          <input type="text" placeholder="Name" required />
-          <input type="password" placeholder="Password" required />
-          <select required>
-            <option value="">Select the role</option>
-            <option value="">Admin</option>
-            <option value="">User</option>
-            <option value="">Officer</option>
+        {/* LOGIN */}
+        <div className="form-container sign-in">
+          <form onSubmit={handleLogin}>
+            <h1>Login</h1>
 
-          </select>
+            <input
+              type="text"
+              placeholder="Name"
+              value={loginName}
+              onChange={(e) => setLoginName(e.target.value)}
+              required
+            />
 
-          <button type="button" onClick={() => setActive(false)}>
-            Login
-          </button>
-        </form>
-      </div>
+            <input
+              type="password"
+              placeholder="Password"
+              value={loginPassword}
+              onChange={(e) => setLoginPassword(e.target.value)}
+              required
+            />
 
+            <select
+              value={loginRole}
+              onChange={(e) => setLoginRole(e.target.value)}
+              required
+            >
+              <option value="">Select Role</option>
+              <option value="admin">Admin</option>
+              <option value="citizen">Citizen</option>
+              <option value="manager">Manager</option>
+            </select>
 
-      <div className="form-container sign-up">
-        <form>
-          <h1>Register</h1>
+            <button type="submit">Login</button>
+          </form>
+        </div>
 
-          <input type="text" placeholder="Name" required />
-          <input type="number" placeholder="Phone Number" required/>
-          <input type="password" placeholder="Password" required/>
-          <input type="password" placeholder="Conform Password" required/>
+        {/* REGISTER */}
+        <div className="form-container sign-up">
+          <form onSubmit={handleRegister}>
+            <h1>Register</h1>
 
-          <button type="button" onClick={() => setActive(true)}>
-            Register
-          </button>
+            <input
+              type="text"
+              placeholder="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
 
+            <input
+              type="tel"
+              placeholder="Phone Number"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              required
+            />
 
-        </form>
-      </div>
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
 
+            <input
+              type="password"
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
 
-      <div className="toggle-container">
-        <div className="toggle">
+            <button type="submit">Register</button>
+          </form>
+        </div>
 
-          <div className="toggle-panel toggle-left">
-            <h1>Welcome Back!</h1>
-            <p>Enter your details to login</p>
-            <button onClick={() => setActive(false)}>Login</button>
+        {/* TOGGLE */}
+        <div className="toggle-container">
+          <div className="toggle">
+
+            <div className="toggle-panel toggle-left">
+              <h1>Welcome Back!</h1>
+              <p>Please login and after register</p>
+              <button type="button" onClick={() => setActive(false)}>
+                Login
+              </button>
+            </div>
+
+            <div className="toggle-panel toggle-right">
+              <h1>Hello!</h1>
+              <p>If you are a New one Please Register first!!</p>
+              <button type="button" onClick={() => setActive(true)}>
+                Register Here
+              </button>
+            </div>
+
           </div>
-
-          <div className="toggle-panel toggle-right">
-            <h1>Hello Friend!</h1>
-            <p>Register to get started</p>
-            <button onClick={() => setActive(true)}>Register</button>
-          </div>
-
         </div>
       </div>
-
     </div>
   );
 };
