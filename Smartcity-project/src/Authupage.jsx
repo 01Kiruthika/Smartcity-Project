@@ -4,23 +4,24 @@ import "./Login.css";
 import { UserName } from "./App.jsx";
 
 const Authupage = () => {
-  const [active, setActive] = useState(false);
- const { setCurrentUserName, setRole } = useContext(UserName);
-  const navigate = useNavigate();
+  const [active, setActive] = useState(false);//TOOGLE LOGIN AND REGISTER SCREEN
+  const { setCurrentUserName, setRole } = useContext(UserName);//CHANGE NAME IN HEADER
+  const navigate = useNavigate();// TO NAVIGATTE DASHBOARD PAGE
 
   // LOGIN STATES
-  const [loginName, setLoginName] = useState("");
-  const [loginPassword, setLoginPassword] = useState("");
-  const [loginRole, setLoginRole] = useState("");
+  const [loginName, setLoginName] = useState("");//LOGIN NAME
+  const [loginPassword, setLoginPassword] = useState("");//LOGIN PASS
+  const [loginRole, setLoginRole] = useState("");// FOR ROLE PURPOSE
 
   // REGISTER STATES
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [name, setName] = useState("");// NEW NAME
+  const [phone, setPhone] = useState("");//NEW PHONE
+  const [password, setPassword] = useState("");//NEW PASS
+  const [confirmPassword, setConfirmPassword] = useState("");//NEW CONFORM PASS
 
   // REGISTER
-  const handleRegister = (e) => {
+  let handleRegister = (e) => {
+    debugger;
     e.preventDefault();
 
     if (phone.length !== 10) {
@@ -33,16 +34,16 @@ const Authupage = () => {
       return;
     }
 
-    const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
+    let existingUsers = JSON.parse(localStorage.getItem("users")) || [];
 
-    const userExists = existingUsers.find((user) => user.name === name);
+    let userExists = existingUsers.find((user) => user.phone === phone);
 
     if (userExists) {
       alert("User already exists!");
       return;
     }
 
-    const newUser = { name, phone, password };
+    let newUser = { name, phone, password };
     existingUsers.push(newUser);
 
     localStorage.setItem("users", JSON.stringify(existingUsers));
@@ -57,50 +58,66 @@ const Authupage = () => {
   };
 
   // LOGIN
-  const handleLogin = (e) => {
+  let handleLogin = (e) => {
     e.preventDefault();
+    debugger
 
-    if (
-      loginName === "admin" &&
-      loginPassword === "admin" &&
-      loginRole === "admin"
-    ) {
-      alert("Admin Login Success");
+    let users = JSON.parse(localStorage.getItem("users")) || [];
 
-      setCurrentUserName("Admin");
-      setRole("admin");
+    switch (loginRole) {
+      // ADMIN 
+      case "admin":
+        if (loginName === "admin" && loginPassword === "admin") {
+          alert("Admin Login Success");
 
-      navigate("/admin");
-      return;
+          setCurrentUserName("Admin");
+          setRole("admin");
+
+          navigate("/admin");
+        } else {
+          alert("Invalid Admin Credentials!");
+        }
+        break;
+
+      // CITIZEN 
+      case "citizen":
+        if (users.length === 0) {
+          alert("Please register first!");
+          break;
+        }
+
+        const validUser = users.find(
+          (user) =>
+            user.name === loginName && user.password === loginPassword
+        );
+
+        if (validUser) {
+          alert("User Login Success!");
+
+          setCurrentUserName(validUser.name);
+          setRole("citizen");
+
+          navigate("/admin");
+        } else {
+          alert("Invalid User Credentials!");
+        }
+        break;
+
+      // MANAGER 
+      case "manager":
+        alert("Manager login not implemented yet!");
+        break;
+
+
+      default:
+        alert("Please select a role!");
     }
 
-    const users = JSON.parse(localStorage.getItem("users"));
-
-    if (!users || users.length === 0) {
-      alert("Please register first!");
-      return;
-    }
-
-    const validUser = users.find(
-      (user) =>
-        user.name === loginName && user.password === loginPassword
-    );
-
-    if (validUser && loginRole === "citizen") {
-      alert("User Login Success!");
-
-      setCurrentUserName(validUser.name);  //  USER NAME SET
-      setRole("citizen");
-
-      navigate("/admin"); // same layout
-    } else {
-      alert("Invalid credentials or role!");
-    }
 
     setLoginName("");
     setLoginPassword("");
+    setLoginRole("");
   };
-
   return (
     <div className="main-container">
 

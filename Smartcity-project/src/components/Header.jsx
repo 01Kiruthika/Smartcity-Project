@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { UserName } from "../App.jsx";
+import { UserName } from "../App";
 
 const Header = () => {
   const { currentUserName } = useContext(UserName);
