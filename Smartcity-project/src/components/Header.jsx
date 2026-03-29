@@ -1,16 +1,14 @@
 import { useContext } from "react";
-import { UserName } from "../App";
-import '../App.css'
+import { UserName } from "../App.jsx";
 
 const Header = () => {
-    const { adminName } = useContext(UserName);
+  const { currentUserName } = useContext(UserName);
 
-    return (
-        <div className="header">
-            <h2>Welcome, {adminName}</h2>
-
-        </div>
-    );
+  return (
+    <header>
+      <h2>Welcome, {currentUserName}</h2>
+    </header>
+  );
 };
 
 export default Header;

@@ -8,16 +8,17 @@ import Dashboardlayout from "./Dashboardlayout.jsx";
 export const UserName = createContext();
 
 function App() {
-  const [adminName, setAdminName] = useState("");
+  const [currentUserName, setCurrentUserName] = useState("");
   const [role, setRole] = useState("");
 
   return (
-    <UserName.Provider value={{ adminName, setAdminName, role, setRole }}>
+    <UserName.Provider value={{ currentUserName, setCurrentUserName, role, setRole }}>
 
       <Routes>
         <Route path="/" element={<Authupage />} />
         <Route path="/admin/*" element={<Dashboardlayout />} />
       </Routes>
+
     </UserName.Provider>
   );
 }

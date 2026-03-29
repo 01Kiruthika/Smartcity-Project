@@ -5,7 +5,7 @@ import { UserName } from "./App.jsx";
 
 const Authupage = () => {
   const [active, setActive] = useState(false);
-  const { setAdminName, setRole } = useContext(UserName);
+ const { setCurrentUserName, setRole } = useContext(UserName);
   const navigate = useNavigate();
 
   // LOGIN STATES
@@ -67,18 +67,17 @@ const Authupage = () => {
     ) {
       alert("Admin Login Success");
 
-      setAdminName("Admin");
+      setCurrentUserName("Admin");
       setRole("admin");
 
       navigate("/admin");
       return;
     }
 
-    // 🔥 USER LOGIN
     const users = JSON.parse(localStorage.getItem("users"));
 
     if (!users || users.length === 0) {
-      alert("No users found! Please register.");
+      alert("Please register first!");
       return;
     }
 
@@ -87,15 +86,15 @@ const Authupage = () => {
         user.name === loginName && user.password === loginPassword
     );
 
-    if (validUser) {
-      alert("Login Success!");
+    if (validUser && loginRole === "citizen") {
+      alert("User Login Success!");
 
-      setAdminName(validUser.name);
-      setRole(loginRole);
+      setCurrentUserName(validUser.name);  //  USER NAME SET
+      setRole("citizen");
 
-      localStorage.setItem("currentUser", JSON.stringify(validUser));
+      navigate("/admin"); // same layout
     } else {
-      alert("Invalid credentials!");
+      alert("Invalid credentials or role!");
     }
 
     setLoginName("");
