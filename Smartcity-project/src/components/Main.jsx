@@ -17,6 +17,14 @@ import Mycomplaints from "../userpages/Mycomplaints.jsx";
 import Trackstatus from "../userpages/Trackstatus.jsx";
 import Profile from "../userpages/Profile.jsx";
 
+//MANAGER PAGES
+import Managerdashboard from "../mangerpages/Dashboard.jsx";
+import Assignedtasks from "../mangerpages/Assignedtasks.jsx"
+import Completedtask from "../mangerpages/Completedtask.jsx"
+import Updatestatus from "../mangerpages/Updatestatus.jsx"
+import Managerlogout from "../mangerpages/Logout.jsx"
+
+
 const Main = () => {
   const { role } = useContext(UserName);
 
@@ -45,6 +53,18 @@ const Main = () => {
             <Route path="trackstatus" element={<Trackstatus />} />
             <Route path="profile" element={<Profile />} />
             <Route path="logout" element={<Logout />} />
+          </>
+        )}
+
+
+        {/* MANAGER ROUTES */}
+        {role === "manager" && (
+          <>
+            <Route path="/" element={<Managerdashboard />} />
+            <Route path="assignedtasks" element={<Assignedtasks />} />
+            <Route path="completedtask" element={<Completedtask />} />
+            <Route path="updatestatus" element={<Updatestatus />} />
+            <Route path="logout" element={<Managerlogout />} />
           </>
         )}
 

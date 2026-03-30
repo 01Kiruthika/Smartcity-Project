@@ -86,7 +86,7 @@ const Authupage = () => {
           break;
         }
 
-        const validUser = users.find(
+        let validUser = users.find(
           (user) =>
             user.name === loginName && user.password === loginPassword
         );
@@ -105,7 +105,26 @@ const Authupage = () => {
 
       // MANAGER 
       case "manager":
-        alert("Manager login not implemented yet!");
+        if (users.length === 0) {
+          alert("Please register first!");
+          break;
+        }
+
+        let manageruser= users.find(
+          (user) =>
+            user.name === loginName && user.password === loginPassword
+        );
+
+        if (manageruser) {
+          alert("Manager Login Success!");
+
+          setCurrentUserName(manageruser.name);
+          setRole("manager");
+
+          navigate("/admin");
+        } else {
+          alert("Invalid Manager Credentials!");
+        }
         break;
 
 
@@ -129,33 +148,41 @@ const Authupage = () => {
           <form onSubmit={handleLogin}>
             <h1>Login</h1>
 
-            <input
-              type="text"
-              placeholder="Name"
-              value={loginName}
-              onChange={(e) => setLoginName(e.target.value)}
-              required
-            />
+            <div className="input-group">
+              <input
+                type="text"
+                placeholder=" "
+                value={loginName}
+                onChange={(e) => setLoginName(e.target.value)}
+                required
+              />
+              <label>Name</label>
+            </div>
 
-            <input
-              type="password"
-              placeholder="Password"
-              value={loginPassword}
-              onChange={(e) => setLoginPassword(e.target.value)}
-              required
-            />
 
-            <select
-              value={loginRole}
-              onChange={(e) => setLoginRole(e.target.value)}
-              required
-            >
-              <option value="">Select Role</option>
-              <option value="admin">Admin</option>
-              <option value="citizen">Citizen</option>
-              <option value="manager">Manager</option>
-            </select>
+            <div className="input-group">
+              <input
+                type="password"
+                placeholder=" "
+                value={loginPassword}
+                onChange={(e) => setLoginPassword(e.target.value)}
+                required
+              />
+              <label>Password</label>
+            </div>
 
+            <div className="input-group">
+              <select
+                value={loginRole}
+                onChange={(e) => setLoginRole(e.target.value)}
+                required
+              >
+                <option value="">Select Role</option>
+                <option value="admin">Admin</option>
+                <option value="citizen">Citizen</option>
+                <option value="manager">Manager</option>
+              </select>
+            </div>
             <button type="submit">Login</button>
           </form>
         </div>
@@ -164,38 +191,53 @@ const Authupage = () => {
         <div className="form-container sign-up">
           <form onSubmit={handleRegister}>
             <h1>Register</h1>
+            <div className="input-group">
+              <input
+                type="text"
+                placeholder=" "
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+              <label>Your Name</label>
+            </div>
 
-            <input
-              type="text"
-              placeholder="Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
 
-            <input
-              type="tel"
-              placeholder="Phone Number"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              required
-            />
+            <div className="input-group">
+              <input
+                type="number"
+                placeholder=" "
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                required
+              />
+              <label>Your Phone Number</label>
+            </div>
 
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
 
-            <input
-              type="password"
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
+
+            <div className="input-group">
+              <input
+                type="password"
+                placeholder=" "
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <label>Your Password</label>
+            </div>
+
+
+            <div className="input-group">
+              <input
+                type="password"
+                placeholder=" "
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
+              <label>Your Conform Password</label>
+            </div>
 
             <button type="submit">Register</button>
           </form>
@@ -223,8 +265,8 @@ const Authupage = () => {
 
           </div>
         </div>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 };
 

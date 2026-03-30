@@ -5,7 +5,7 @@
 }
 
 .main-container {
-    background: rgb(109, 33, 46);
+    /* background:#0f172a ; */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -23,12 +23,15 @@
 }
 
 .form-container {
-    border: 4px solid;
+    /* border: 4px solid; */
     position: absolute;
     top: 0;
     height: 100%;
     width: 50%;
-    transition: all 0.6s ease;
+    transition: all 0.5s linear;
+    /* background-color: #f8931f; */
+    background-color: #e2ba7d;
+    color: #012a3c;
 }
 
 .sign-in {
@@ -62,27 +65,80 @@ form {
     justify-content: center;
     align-items: center;
     gap: 15px;
+    color: #012a3c;
 }
 
-input {
+
+.input-group {
+  position: relative;
+  width: 80%;
+}
+
+
+.input-group input,
+.input-group select {
+  width: 100%;
+  padding: 12px 10px;
+  border: 1px solid #012a3c;
+  border-radius: 6px;
+  background: transparent;
+  color: #012a3c;
+  outline: none;
+  font-size: 15px;
+}
+
+
+.input-group label {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  color: #012a3c;
+  font-size: 14px;
+  pointer-events: none;
+  transition: 0.3s ease;
+  background: #e2ba7d;   
+  padding: 0 5px;
+}
+
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label {
+  top: -8px;
+  left: 8px;
+  font-size: 11px;
+}
+
+
+.input-group select:focus + label {
+  top: -8px;
+  left: 8px;
+  font-size: 11px;
+}
+
+/* input {
     padding: 10px;
     width: 80%;
+    color: #012a3c;
+    font-size: 15px;
 }
 
 select {
     padding: 10px;
     width: 80%;
-}
+    color: #012a3c;
+} */
 
 button {
     padding: 10px 20px;
-    background: #38bdf8;
+    background: #0f766e;
+    color: white;
     border: none;
     cursor: pointer;
-    color: white;
+    border-radius: 5px;
 }
 
-
+button:hover {
+    background: #115e59;
+}
 .toggle-container {
     /* border: 2px solid slateblue; */
     position: absolute;
@@ -95,7 +151,10 @@ button {
 
 .toggle {
     /* border: 2px solid yellow; */
-    background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+    /* background: linear-gradient(135deg, #38bdf8, #0ea5e9); */
+    /* background-color: #730045; */
+    background-color: #012a3c;
+   
     height: 100%;
     width: 200%;
     position: relative;
@@ -113,7 +172,7 @@ button {
     position: absolute;
     width: 50%;
     height: 100%;
-    color: white;
+    color:  #e2ba7d;
     display: flex;
     flex-direction: column;
     justify-content: center;
