@@ -24,6 +24,7 @@ const Aside = () => {
             {/* USER MENU */}
             {role === "citizen" && (
                <>
+                  <li><Link to="/admin"><i class="fa fa-tachometer" aria-hidden="true"></i>Dashboard</Link></li>
                   <li><Link to="/admin/report"><i className="fa fa-pencil-square-o" aria-hidden="true"></i>Report Issue</Link></li>
                   <li><Link to="/admin/mycomplaints"><i class="fa fa-list" aria-hidden="true"></i>My Complaints</Link></li>
                   <li><Link to="/admin/trackstatus"><i class="fa fa-location-arrow" aria-hidden="true"></i>Track Status</Link></li>

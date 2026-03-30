@@ -4,7 +4,7 @@
   box-sizing: border-box;
 }
 .Container {
-  border: 4px soild red;
+  /* border: 4px soild red; */
   display: grid;
   height: 100vh;
   grid-template-columns: 200px auto;

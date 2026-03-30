@@ -11,7 +11,7 @@ import Reports from "../adminpages/Reports.jsx";
 import Viewcomplaints from "../adminpages/Viewcomplaints.jsx";
 
 // USER PAGES
-import Home from "../userpages/Home.jsx";
+import Userdashboard from "../userpages/Dashboard.jsx";
 import Reportissue from "../userpages/Reportissue.jsx";
 import Mycomplaints from "../userpages/Mycomplaints.jsx";
 import Trackstatus from "../userpages/Trackstatus.jsx";
@@ -47,7 +47,7 @@ const Main = () => {
         {/* USER ROUTES */}
         {role === "citizen" && (
           <>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={< Userdashboard />} />
             <Route path="report" element={<Reportissue />} />
             <Route path="mycomplaints" element={<Mycomplaints />} />
             <Route path="trackstatus" element={<Trackstatus />} />
