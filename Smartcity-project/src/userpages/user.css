@@ -74,3 +74,88 @@
     border-radius: 10px;
     border: 2px solid #0f766e;
 }
+
+/* FOR COMPLAINTS CSS */
+
+.Complaint-body {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 10px;
+    padding: 10px;
+}
+
+.complaint-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    background: #fff;
+    border-radius: 10px;
+    height: 80px; 
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
+
+
+.complaint-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 12px rgba(0,0,0,0.15);
+}
+
+
+.card-img {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+
+.compl-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.title {
+    font-size: 14px;
+    margin: 0;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.location {
+    font-size: 12px;
+    color: #666;
+    margin: 2px 0;
+}
+
+
+.status {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    color: #fff;
+    width: fit-content;
+}
+
+
+.pending {
+    background: red;
+}
+
+.in-progress {
+    background: orange;
+}
+
+.resolved {
+    background: green;
+}
+
+@media (max-width: 768px) {
+  .Complaint-body {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

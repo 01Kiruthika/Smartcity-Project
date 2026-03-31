@@ -1,6 +1,7 @@
 import { useState, useContext, useRef } from "react";
-import { UserName } from "../App";
+import { UserName } from "../App.jsx";
 import "./user.css";
+import Cameracapture from "./Cameracapture.jsx";
 
 const Reportissue = () => {
   const { currentUserName } = useContext(UserName);
@@ -8,23 +9,9 @@ const Reportissue = () => {
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("");
   const [image, setImage] = useState("");
-  const [category, setCategory] = useState("");
-
 
   const fileInputRef = useRef(null);
 
-  let handleImage = (e) => {
-    debugger;
-    let file = e.target.files[0];
-
-    if (file) {
-      let reader = new FileReader();
-      reader.onloadend = () => {
-        setImage(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   // SUBMIT
   const handleSubmit = (e) => {
@@ -36,7 +23,6 @@ const Reportissue = () => {
     let newIssue = {
       id: Date.now(),
       user: currentUserName,
-      category,
       title,
       location,
       date: today,
@@ -48,7 +34,7 @@ const Reportissue = () => {
 
     alert("Submitted Successfully!");
 
-    setCategory("");
+
     setTitle("");
     setLocation("");
     setImage("");
@@ -70,18 +56,7 @@ const Reportissue = () => {
       <div className="report-body">
         <form onSubmit={handleSubmit} className="reportissue-form">
           <h3>Fill the form</h3>
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            required
-          >
-            <option value="">Select Category</option>
-            <option value="Road">Road</option>
-            <option value="Electricity">Electricity</option>
-            <option value="Water">Water</option>
-            <option value="Garbage">Garbage</option>
-            <option value="Other">Other</option>
-          </select>
+
           <input
             type="text"
             placeholder="Issue..eg.Street light not working"
@@ -98,22 +73,17 @@ const Reportissue = () => {
             required
           />
 
-          <input
-            type="file"
-            accept="image/*"
-            capture="environment"
-            onChange={handleImage}
-            ref={fileInputRef}
-            required
+          {/* CAMERA */}
+          <Cameracapture setImage={setImage} />
 
-          />
-
-
+          {/* 🔥 IMAGE PREVIEW */}
           {image && (
-            <div className="preview">
-              <img src={image} alt="preview" />
+            <div>
+              <img src={image} alt="preview" width="150" />
             </div>
           )}
+
+
 
           <button type="submit">Submit</button>
 
