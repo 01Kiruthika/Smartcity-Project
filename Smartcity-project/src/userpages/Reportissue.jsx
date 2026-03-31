@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useRef } from "react";
 import { UserName } from "../App";
 import "./user.css";
 
@@ -7,8 +7,11 @@ const Reportissue = () => {
 
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("");
-  const [date, setDate] = useState("");
   const [image, setImage] = useState("");
+  const [category, setCategory] = useState("");
+
+
+  const fileInputRef = useRef(null);
 
   let handleImage = (e) => {
     debugger;
@@ -28,12 +31,15 @@ const Reportissue = () => {
     debugger
     e.preventDefault();
 
+    let today = new Date().toLocaleDateString();
+
     let newIssue = {
       id: Date.now(),
       user: currentUserName,
+      category,
       title,
       location,
-      date,
+      date: today,
       image,
       status: "Pending"
     };
@@ -42,61 +48,77 @@ const Reportissue = () => {
 
     alert("Submitted Successfully!");
 
-
+    setCategory("");
     setTitle("");
     setLocation("");
-    setDate("");
     setImage("");
+
+
+    //CLEAR THE INPUT FILE
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   return (
     <div className="report-container">
-
-      <h2>Report Issue</h2>
-
-      <form onSubmit={handleSubmit} className="report-form">
-
-        <input
-          type="text"
-          placeholder="Issue..eg.Street light not working"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-        />
-
-        <input
-          type="text"
-          placeholder="Location"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          required
-        />
-
-        <input
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-          required
-        />
-
-        <input
-          type="file"
-          accept="image/*"
-          capture="environment"
-          onChange={handleImage}
-          required
-        />
+      <div className="report-head">
+        <h2>Report Issue</h2>
+      </div>
 
 
-        {image && (
-          <div className="preview">
-            <img src={image} alt="preview" />
-          </div>
-        )}
+      <div className="report-body">
+        <form onSubmit={handleSubmit} className="reportissue-form">
+          <h3>Fill the form</h3>
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            required
+          >
+            <option value="">Select Category</option>
+            <option value="Road">Road</option>
+            <option value="Electricity">Electricity</option>
+            <option value="Water">Water</option>
+            <option value="Garbage">Garbage</option>
+            <option value="Other">Other</option>
+          </select>
+          <input
+            type="text"
+            placeholder="Issue..eg.Street light not working"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
 
-        <button type="submit">Submit Issue</button>
+          <input
+            type="text"
+            placeholder="Location"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            required
+          />
 
-      </form>
+          <input
+            type="file"
+            accept="image/*"
+            capture="environment"
+            onChange={handleImage}
+            ref={fileInputRef}
+            required
+
+          />
+
+
+          {image && (
+            <div className="preview">
+              <img src={image} alt="preview" />
+            </div>
+          )}
+
+          <button type="submit">Submit</button>
+
+        </form>
+      </div>
     </div>
   );
 };
