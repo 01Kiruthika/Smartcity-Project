@@ -77,29 +77,24 @@
 
 /* FOR COMPLAINTS CSS */
 
-.Complaint-body {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); 
-    gap: 10px;
-    padding: 10px;
-}
 
 .complaint-card {
+    border: 2px solid red;
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 8px;
+    padding: 10px 15px;
     background: #fff;
     border-radius: 10px;
-    height: 80px; 
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    height: 90px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     transition: 0.3s;
 }
 
 
 .complaint-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 5px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
 }
 
 
@@ -126,7 +121,8 @@
     text-overflow: ellipsis;
 }
 
-.location {
+.location,
+.date {
     font-size: 12px;
     color: #666;
     margin: 2px 0;
@@ -154,8 +150,5 @@
     background: green;
 }
 
-@media (max-width: 768px) {
-  .Complaint-body {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
+
+/* DASHBOARD PAGES */

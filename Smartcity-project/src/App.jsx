@@ -10,6 +10,7 @@ export const UserName = createContext();
 function App() {
   const [currentUserName, setCurrentUserName] = useState("");
   const [role, setRole] = useState("");
+  
 
   return (
     <UserName.Provider value={{ currentUserName, setCurrentUserName, role, setRole }}>

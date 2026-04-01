@@ -123,7 +123,7 @@ const Authupage = () => {
 
           navigate("/admin");
         } else {
-          alert("Invalid Manager Credentials!");
+          alert("Invalid  Credentials!");
         }
         break;
 
