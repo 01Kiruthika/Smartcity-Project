@@ -28,7 +28,7 @@ const Aside = () => {
                   <li><Link to="/admin/report"><i className="fa fa-pencil-square-o" aria-hidden="true"></i>Report Issue</Link></li>
                   <li><Link to="/admin/mycomplaints"><i class="fa fa-list" aria-hidden="true"></i>My Complaints</Link></li>
                   <li><Link to="/admin/trackstatus"><i class="fa fa-location-arrow" aria-hidden="true"></i>Track Status</Link></li>
-                  <li><Link to="/admin/profile"><i class="fa fa-user" aria-hidden="true"></i>Profile</Link></li>
+                  {/* <li><Link to="/admin/profile"><i class="fa fa-user" aria-hidden="true"></i>Profile</Link></li> */}
                   <li><Link to="/admin/logout"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</Link></li>
                </>
             )}

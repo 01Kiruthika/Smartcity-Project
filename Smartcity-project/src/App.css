@@ -8,9 +8,9 @@
   display: grid;
   height: 100vh;
   grid-template-columns: 200px auto;
-  grid-template-areas: ' header header'
+  grid-template-areas: ' sidemenu header'
     'sidemenu main'
-    'footer footer'
+    'sidemenu footer'
   ;
   grid-template-rows: 40px auto 40px;
 
@@ -18,8 +18,23 @@
 }
 
 header {
-    grid-area: header;
-    border: 2px solid black;
+    grid-area: 'header';
+    border: 2px solid;
+    height: 55px;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    /* background-color: aquamarine; */
+}
+.logo{
+  /* border: 2px solid; */
+  height: 50px;
+  margin: 2px;
+  margin-right: 25px;
+}
+.logo img{
+  height: 100%;
+  cursor: pointer;
 }
 
 aside {
@@ -50,6 +65,7 @@ aside ul li a{
 main {
    border: 2px solid;
     grid-area: main;
+    margin-top: 15px;
     /* overflow: auto; */
 }
 
