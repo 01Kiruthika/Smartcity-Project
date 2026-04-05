@@ -3,13 +3,21 @@ import '../App.css'
 import { Link } from 'react-router-dom'
 import { useContext } from "react";
 import { UserName } from '../App.jsx';
+// import smartcitiylogo from '../Images/Smart-City-logo.png'
+import smartcitiylogo from '../Images/Smart- logo.png'
 
 const Aside = () => {
    const { role } = useContext(UserName);
    return (
 
       <aside>
+         <div className="smart-logo">
+            <img src={smartcitiylogo} alt="" />
+         </div>
+
          <ul>
+
+
             {/* ADMIN MENU */}
             {role === "admin" && (
                <>

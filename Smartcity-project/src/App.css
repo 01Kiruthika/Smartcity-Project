@@ -2,7 +2,10 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+    /* outline: 1px solid red; */
 }
+
+
 .Container {
   /* border: 4px soild red; */
   display: grid;
@@ -16,63 +19,85 @@
 
 
 }
-
-header {
-    grid-area: 'header';
-    border: 2px solid;
-    height: 55px;
-    z-index: 100;
-    display: flex;
-    justify-content: space-between;
-    /* background-color: aquamarine; */
+body{
+  overflow-x: hidden;  
 }
-.logo{
+header {
+  grid-area: 'header';
+  border: 2px solid;
+  height: 55px;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  /* background-color: aquamarine; */
+   width: 100%;
+  /* overflow: hidden; */
+}
+
+.logo {
   /* border: 2px solid; */
   height: 50px;
   margin: 2px;
   margin-right: 25px;
 }
-.logo img{
+
+.logo img {
   height: 100%;
   cursor: pointer;
 }
 
 aside {
-    border: 2px solid ;
-    grid-area: sidemenu;
-}
-aside ul{
   border: 2px solid;
-  margin-top: 100px;
+  grid-area: sidemenu;
+}
+.smart-logo{
+  border: 2px solid;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  margin: 0 auto;
+  margin-top: 20px;
+}
+.smart-logo img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+   border-radius: 50%;
+}
+aside ul {
+  border: 2px solid;
   padding: 25px 5px;
   /* margin-top: 150px; */
 }
 
-aside ul li{
+aside ul li {
   padding: 10px;
   list-style: none;
 }
-aside ul li a{
+
+aside ul li a {
   text-decoration: none;
   color: black;
   font-size: 18px;
   padding: 5px;
 }
-.fa{
+
+.fa {
   margin: 5px;
   font-size: 15px;
 }
+
 main {
-   border: 2px solid;
-    grid-area: main;
-    margin-top: 15px;
-    /* overflow: auto; */
+  border: 2px solid;
+  grid-area: main;
+  margin-top: 15px;
+  /* overflow: auto; */
 }
 
- footer {
-    grid-area: footer;
-    border: 2px solid black;
-} 
+footer {
+  grid-area: footer;
+  border: 2px solid black;
+}
 
 
 .profile-container {
@@ -85,21 +110,29 @@ main {
   border-radius: 50%;
   cursor: pointer;
 }
-
-/* DROPDOWN BOX */
 .profile-dropdown {
   position: absolute;
   top: 55px;
   right: 0;
+
   width: 300px;
   background: #fff;
   border-radius: 12px;
   padding: 15px;
   box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-  animation: fadeIn 0.2s ease-in-out;
+
+  transform: translateX(110%);
+  opacity: 0;
+
+  transition: 0.5s linear;
   z-index: 100;
-  margin-right: 10px;
 }
+
+.profile-dropdown.active {
+  transform: translateX(0);
+  opacity: 1;
+}
+
 
 .profile-header {
   display: flex;
@@ -148,6 +181,10 @@ main {
   color: white;
 }
 
+.logout img {
+  /* background-color: white; */
+}
+
 /* FORM */
 .form-section {
   display: flex;
@@ -161,16 +198,17 @@ main {
   border: 1px solid #ddd;
 }
 
-/* AVATAR UPLOAD */
+
 .avatar-upload {
   display: flex;
   align-items: center;
-  /* gap: 10px; */
   width: 10px;
 }
-.avatar-upload input{
-   width: 230px;
+
+.avatar-upload input {
+  width: 230px;
 }
+
 .avatar-upload img {
   width: 40px;
   height: 40px;
@@ -195,16 +233,4 @@ main {
 
 .btn-group button:last-child {
   background: gray;
-}
-
-/* ANIMATION */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
