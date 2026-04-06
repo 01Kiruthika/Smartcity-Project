@@ -3,7 +3,7 @@ import React from 'react'
 const Viewcomplaints = () => {
   return (
     <div>
-      Viewcomplaints
+    Complaint Management
     </div>
   )
 }

@@ -3,7 +3,7 @@ import React from 'react'
 const Assignwork = () => {
   return (
     <div>
-      Assign Work
+      Task Assignment
     </div>
   )
 }

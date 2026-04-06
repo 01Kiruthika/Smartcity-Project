@@ -4,7 +4,6 @@ import { UserName } from "../App";
 
 // ADMIN PAGES
 import Dashboard from "../adminpages/Dashboard.jsx";
-import Logout from "../adminpages/Logout.jsx";
 import Manageusers from "../adminpages/Manageusers.jsx";
 import Assignwork from "../adminpages/Assignwork.jsx";
 import Reports from "../adminpages/Reports.jsx";
@@ -36,11 +35,11 @@ const Main = () => {
         {role === "admin" && (
           <>
             <Route path="/" element={<Dashboard />} />
-            <Route path="manageusers" element={<Manageusers />} />
-            <Route path="viewcomplaints" element={<Viewcomplaints />} />
-            <Route path="assignwork" element={<Assignwork />} />
+            <Route path="users" element={<Manageusers />} />
+            <Route path="assign" element={<Assignwork />} />
             <Route path="reports" element={<Reports />} />
-            <Route path="logout" element={<Logout />} />
+            <Route path="viewcomplaints" element={<Viewcomplaints />} />
+
           </>
         )}
 
