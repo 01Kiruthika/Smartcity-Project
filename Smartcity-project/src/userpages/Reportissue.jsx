@@ -2,6 +2,7 @@ import { useState, useContext, useRef } from "react";
 import { UserName } from "../App.jsx";
 import "./user.css";
 import Cameracapture from "./Cameracapture.jsx";
+import VoiceInput from "./VoiceInput.jsx";
 
 const Reportissue = () => {
   const { currentUserName } = useContext(UserName);
@@ -12,10 +13,8 @@ const Reportissue = () => {
 
   const fileInputRef = useRef(null);
 
-
   // SUBMIT
   const handleSubmit = (e) => {
-    debugger
     e.preventDefault();
 
     let today = new Date().toLocaleDateString();
@@ -31,65 +30,74 @@ const Reportissue = () => {
     };
 
     console.log("Submitted Data:", newIssue);
-
     alert("Submitted Successfully!");
-
 
     setTitle("");
     setLocation("");
     setImage("");
 
-
-    //CLEAR THE INPUT FILE
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
   };
 
   return (
-    <div className="report-container">
+    <>
+
       <div className="report-head">
         <h2>Report Issue</h2>
       </div>
-
-
-      <div className="report-body">
-        <form onSubmit={handleSubmit} className="reportissue-form">
-          <h3>Fill the form</h3>
-
-          <input
-            type="text"
-            placeholder="Issue..eg.Street light not working"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-
-          <input
-            type="text"
-            placeholder="Location"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            required
-          />
-
-          {/* CAMERA */}
-          <Cameracapture setImage={setImage} />
-
-          {/* 🔥 IMAGE PREVIEW */}
-          {image && (
-            <div>
-              <img src={image} alt="preview" width="150" />
+      <div className="report-wrapper">
+        <div className="report-card">
+          <form onSubmit={handleSubmit}>
+            <h3 className="report-subtitle">Describe the Problem</h3>
+            {/* 🎤 VOICE */}
+            <div className="voice-row">
+              <VoiceInput onTextDetected={(text) => setTitle(text)} />
             </div>
-          )}
 
+            {/* INPUTS */}
+            <input
+              type="text"
+              placeholder="Issue (eg. Street light not working)"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="input-field"
+              required
+            />
 
+            <input
+              type="text"
+              placeholder="Location"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              className="input-field"
+              required
+            />
 
-          <button type="submit">Submit</button>
+            {/* 📸 CAMERA SECTION */}
+            <div className="camera-section">
+              <p className="camera-text">
+                Please upload proof of the issue using camera
+              </p>
 
-        </form>
+              <Cameracapture setImage={setImage} />
+
+              {image && (
+                <img src={image} alt="preview" className="preview-img" />
+              )}
+            </div>
+
+            {/* SUBMIT */}
+            <button type="submit" className="submit-btn">
+              Submit Issue
+            </button>
+
+          </form>
+
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

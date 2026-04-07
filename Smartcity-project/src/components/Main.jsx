@@ -50,8 +50,8 @@ const Main = () => {
             <Route path="report" element={<Reportissue />} />
             <Route path="mycomplaints" element={<Mycomplaints />} />
             <Route path="trackstatus" element={<Trackstatus />} />
-            <Route path="profile" element={<Profile />} />
-            <Route path="logout" element={<Logout />} />
+            {/* <Route path="profile" element={<Profile />} /> */}
+            {/* <Route path="logout" element={<Logout />} /> */}
           </>
         )}
 
