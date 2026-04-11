@@ -9,8 +9,8 @@ const Authupage = () => {
   const navigate = useNavigate();// TO NAVIGATTE DASHBOARD PAGE
 
   // LOGIN STATES
-  const [loginName, setLoginName] = useState("");
-  const [loginPassword, setLoginPassword] = useState("");
+  const [loginName, setLoginName] = useState("");//LOGIN NAME
+  const [loginPassword, setLoginPassword] = useState("");//LOGIN PASS
   const [loginRole, setLoginRole] = useState("");// FOR ROLE PURPOSE
 
   // REGISTER STATES

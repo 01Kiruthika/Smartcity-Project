@@ -1,5 +1,170 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* CONTAINER */
+.complaints-container {
+  padding: 20px;
+}
+
+/* GRID */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+  padding: 20px;
+}
+
+/* CARD */
+.complaint-cards {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: 0.4s ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* HOVER EFFECT */
+.complaint-cards:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+}
+
+/* IMAGE CONTAINER */
+.image-container {
+  position: relative;
+  height: 230px;
+}
+
+/* IMAGE */
+.image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: 0.4s ease;
+}
+
+/* IMAGE ZOOM */
+.complaint-card:hover img {
+  transform: scale(1.1);
+}
+
+/* DARK GRADIENT OVERLAY */
+.image-container::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.85),
+    rgba(0, 0, 0, 0.3),
+    transparent
+  );
+}
+
+/* STATUS BADGE */
+.status {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  z-index: 2;
+}
+
+/* STATUS COLORS */
+.status.pending {
+  border: 1px solid #ef4444;
+}
+
+.status.resolved {
+  border: 1px solid #22c55e;
+}
+
+.status.in-progress {
+  border: 1px solid #eab308;
+}
+
+/* TEXT OVER IMAGE */
+.overlay-content {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+  color: white;
+  z-index: 2;
+}
+
+.overlay-content h3 {
+  margin-bottom: 6px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.overlay-content p {
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+/* ACTION BUTTONS */
+.card-actions {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 10px;
+  z-index: 3;
+  opacity: 0;
+  transition: 0.3s ease;
+}
+
+/* SHOW ON HOVER */
+.complaint-card:hover .card-actions {
+  opacity: 1;
+}
+
+/* BUTTON STYLE */
+.card-actions button {
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+  border: none;
+  padding: 7px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ICON STYLE */
+.card-actions svg {
+  font-size: 14px;
+  color: white;
+  transition: 0.3s;
+}
+
+/* HOVER EFFECT */
+.card-actions button:hover {
+  transform: scale(1.2);
+  background: rgba(0, 0, 0, 0.7);
+}
+
+/* RESPONSIVE */
+@media (max-width: 1000px) {
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
 }
