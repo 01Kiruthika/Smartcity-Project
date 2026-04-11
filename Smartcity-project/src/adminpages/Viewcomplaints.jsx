@@ -31,28 +31,6 @@ const Viewcomplaints = () => {
 
       <div className="card-grid">
         {complaints.map((c) => (
-          // <div className="complaint-cards">
-          //   <img src={c.image} alt="" />
-
-          //   <div className="card-content">
-          //     <h3>{c.title}</h3>
-          //     <p> {c.location}</p>
-          //     <p>{new Date(c.date).toLocaleDateString()}</p>
-
-          //     <span
-          //       className="status-badge"
-          //       style={{ backgroundColor: getStatusColor(c.status) }}
-          //     >
-          //       {c.status}
-          //     </span>
-          //     <div className="action-buttons">
-          //       {/* <button><FaEye /></button> */}
-          //       <button><FaEdit /></button>
-          //       <button><FaTrash /></button>
-          //     </div>
-          //     {/* <button className="view-btn">View</button> */}
-          //   </div>
-          // </div>
           <div className="complaint-cards">
 
             <div className="image-container">
@@ -64,23 +42,18 @@ const Viewcomplaints = () => {
                 style={{ backgroundColor: getStatusColor(c.status) }}
               ></span>
               <div className="card-actions">
-                {/* <span>👁</span> */}
                 <button><FaEdit /></button>
                 <button><FaTrash /></button>
               </div>
               {/* OVERLAY CONTENT */}
               <div className="overlay-content">
                 <h3>{c.title}</h3>
-                <p>📍 {c.location}</p>
-                <p>📅 {c.date}</p>
+                <p>{c.location}</p>
+                <p>{c.date}</p>
               </div>
             </div>
 
           </div>
-
-
-
-
         ))}
       </div>
 
