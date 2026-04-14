@@ -22,10 +22,11 @@ const Aside = () => {
             {role === "admin" && (
                <>
                   <li><Link to="/admin"><i class="fa fa-tachometer" aria-hidden="true"></i>Dashboard</Link></li>
-                  <li><Link to="/admin/users"><i className="fa fa-users" aria-hidden="true"></i>User Management</Link></li>
-                  <li><Link to="/admin/assign"><i className="fa fa-tasks" aria-hidden="true"></i>Task Assignment</Link></li>
-                  <li><Link to="/admin/reports"><i className="fa fa-bar-chart" aria-hidden="true"></i>Reports</Link></li>
+                  <li><Link to="/admin/users"><i className="fa fa-users" aria-hidden="true"></i>User and Manger</Link></li>
                   <li><Link to="/admin/viewcomplaints"><i className="fa fa-clipboard" aria-hidden="true"></i>Complaint Management</Link></li>
+                  <li><Link to="/admin/assign"><i className="fa fa-tasks" aria-hidden="true"></i>Assign Complaint</Link></li>
+                  <li><Link to="/admin/reports"><i className="fa fa-bar-chart" aria-hidden="true"></i>Reports</Link></li>
+
                </>
             )}
 
