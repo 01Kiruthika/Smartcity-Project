@@ -9,7 +9,7 @@ const Authupage = () => {
   const navigate = useNavigate();// TO NAVIGATTE DASHBOARD PAGE
 
   // LOGIN STATES
-  const [loginName, setLoginName] = useState("");//LOGIN NAME
+  const [loginPhone, setLoginPhone] = useState("");//LOGIN NAME
   const [loginPassword, setLoginPassword] = useState("");//LOGIN PASS
   const [loginRole, setLoginRole] = useState("");// FOR ROLE PURPOSE
 
@@ -67,7 +67,7 @@ const Authupage = () => {
     switch (loginRole) {
       // ADMIN 
       case "admin":
-        if (loginName === "admin" && loginPassword === "admin") {
+        if (loginPhone === "123456789" && loginPassword === "admin") {
           alert("Admin Login Success");
 
           setCurrentUserName("Admin");
@@ -88,7 +88,7 @@ const Authupage = () => {
 
         let validUser = users.find(
           (user) =>
-            user.name === loginName && user.password === loginPassword
+            user.phone === loginPhone && user.password === loginPassword
         );
 
         if (validUser) {
@@ -112,7 +112,7 @@ const Authupage = () => {
 
         let manageruser= users.find(
           (user) =>
-            user.name === loginName && user.password === loginPassword
+            user.phone === loginPhone && user.password === loginPassword
         );
 
         if (manageruser) {
@@ -133,7 +133,7 @@ const Authupage = () => {
     }
 
 
-    setLoginName("");
+    setLoginPhone("");
     setLoginPassword("");
     setLoginRole("");
   };
@@ -150,13 +150,13 @@ const Authupage = () => {
 
             <div className="input-group">
               <input
-                type="text"
+                type="number"
                 placeholder=" "
-                value={loginName}
-                onChange={(e) => setLoginName(e.target.value)}
+                value={loginPhone}
+                onChange={(e) => setLoginPhone(e.target.value)}
                 required
               />
-              <label>Name</label>
+              <label>Phone Number</label>
             </div>
 
 
