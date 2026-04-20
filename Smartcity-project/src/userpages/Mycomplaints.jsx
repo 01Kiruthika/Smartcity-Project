@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import './user.css'
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { FaEdit, FaTrash } from "react-icons";
+import "./user.css";
 
 const Mycomplaints = () => {
-
+  const navigate = useNavigate();
   const [complaints, setComplaints] = useState([]);
 
   useEffect(() => {
@@ -16,28 +18,49 @@ const Mycomplaints = () => {
 
       const userId = localStorage.getItem("userId");
 
-      // Filter only current user complaints
-      const myData = data.response.filter(
+      const myData = (data.response || []).filter(
         (c) => c.user_id === userId
       );
 
       setComplaints(myData);
-
     } catch (error) {
       console.error(error);
     }
   };
 
-  // Status → Progress %
+  const handleDelete = async (id) => {
+    if (!window.confirm("Do you want to delete this complaint?")) return;
+
+    try {
+      const res = await fetch(`http://localhost:8011/complaint/${id}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        alert("Deleted Successfully");
+        setComplaints((prev) => prev.filter((c) => c._id !== id));
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // SEND DATA VIA ROUTER STATE
+  const handleEdit = (complaint) => {
+    navigate("/app/report", { state: complaint });
+  };
+
   const getProgress = (status) => {
-    if (status === "Pending") return 0;
-    if (status === "InProgress") return 50;
-    if (status === "Solved") return 100;
+    switch (status) {
+      case "Pending": return 0;
+      case "InProgress": return 50;
+      case "Solved": return 100;
+      default: return 0;
+    }
   };
 
   return (
-    <div className='report-container'>
-
+    <div className="report-container">
       <div className="report-head">
         <h2>My Complaints</h2>
       </div>
@@ -47,32 +70,39 @@ const Mycomplaints = () => {
 
           {complaints.map((c) => (
             <div className="col-6 col-md-4" key={c._id}>
-
               <div className="complaint-wrapper">
 
                 <div className="complaint-card d-flex align-items-center">
-
-                  <img
-                    src={c.proof}
-                    alt="issue"
-                    className="card-img"
-                  />
+                  <img src={c.proof} alt="issue" className="card-img" />
 
                   <div className="compl-body">
                     <h4 className="title">{c.title}</h4>
                     <p className="location">{c.location}</p>
-                    <p className='date'>
+                    <p className="date">
                       {new Date(c.createdAt).toLocaleDateString()}
                     </p>
 
                     <span className={`status ${c.status}`}>
                       {c.status}
                     </span>
+
+
+                    <div className="action-icons">
+                      <button onClick={() => handleEdit(c)} className="icon-btn edit">
+                        <FaEdit />
+                      </button>
+
+                      <button onClick={() => handleDelete(c._id)} className="icon-btn delete">
+                        <FaTrash />
+                      </button>
+                    </div>
+
+
                   </div>
+
 
                 </div>
 
-                {/*  Progress Bar */}
                 <div className="progress-container">
                   <div className="progress-track">
                     <div
@@ -87,15 +117,13 @@ const Mycomplaints = () => {
                 </div>
 
               </div>
-
             </div>
           ))}
 
         </div>
       </div>
-
     </div>
-  )
-}
+  );
+};
 
-export default Mycomplaints
+export default Mycomplaints;

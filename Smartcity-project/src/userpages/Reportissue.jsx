@@ -1,4 +1,5 @@
-import { useState, useContext, useRef } from "react";
+import { useState, useContext, useRef, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { UserName } from "../App.jsx";
 import "./user.css";
 import Cameracapture from "./Cameracapture.jsx";
@@ -6,12 +7,32 @@ import VoiceInput from "./VoiceInput.jsx";
 
 const Reportissue = () => {
   const { currentUserName } = useContext(UserName);
+  const locationData = useLocation();
 
+  const [editId, setEditId] = useState(null);
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("");
   const [image, setImage] = useState("");
 
   const fileInputRef = useRef(null);
+
+  // LOAD EDIT DATA FROM ROUTER
+  useEffect(() => {
+    if (locationData.state) {
+      const c = locationData.state;
+
+      setTitle(c.title || "");
+      setLocation(c.location || "");
+      setImage(c.proof || "");
+      setEditId(c._id);
+    } else {
+      // normal open → empty
+      setTitle("");
+      setLocation("");
+      setImage("");
+      setEditId(null);
+    }
+  }, [locationData.state]);
 
   // SUBMIT
   const handleSubmit = async (e) => {
@@ -21,17 +42,23 @@ const Reportissue = () => {
 
     const complaintData = {
       user_id: userId,
-      title: title,           
-      location: location,
+      title,
+      location,
       proof: image,
-      status: "Pending"
+      status: "Pending",
     };
 
-    console.log("Sending:", complaintData); 
-
     try {
-      const response = await fetch("http://localhost:8011/complaint", {
-        method: "POST",
+      let url = "http://localhost:8011/complaint";
+      let method = "POST";
+
+      if (editId) {
+        url = `http://localhost:8011/complaint/${editId}`;
+        method = "PUT";
+      }
+
+      const response = await fetch(url, {
+        method,
         headers: {
           "Content-Type": "application/json",
         },
@@ -40,22 +67,20 @@ const Reportissue = () => {
 
       const data = await response.json();
 
-      console.log("Response:", data);
-
       if (response.ok) {
-        alert("Complaint Submitted Successfully");
+        alert(editId ? "Updated Successfully" : "Complaint Submitted Successfully");
 
-        // clear form
         setTitle("");
         setLocation("");
         setImage("");
+        setEditId(null);
 
         if (fileInputRef.current) {
           fileInputRef.current.value = "";
         }
 
       } else {
-        alert(data.response || "Error");
+        alert(data.message || "Error");
       }
 
     } catch (error) {
@@ -66,23 +91,23 @@ const Reportissue = () => {
 
   return (
     <>
-
       <div className="report-head">
-        <h2>Report Issue</h2>
+        <h2>{editId ? "Edit Issue" : "Report Issue"}</h2>
       </div>
+
       <div className="report-wrapper">
         <div className="report-card">
+
           <form onSubmit={handleSubmit}>
             <h3 className="report-subtitle">Describe the Problem</h3>
-            {/* 🎤 VOICE */}
+
             <div className="voice-row">
               <VoiceInput onTextDetected={(text) => setTitle(text)} />
             </div>
 
-            {/* INPUTS */}
             <input
               type="text"
-              placeholder="Issue (eg. Street light not working)"
+              placeholder="Issue"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="input-field"
@@ -98,10 +123,9 @@ const Reportissue = () => {
               required
             />
 
-            {/* 📸 CAMERA SECTION */}
             <div className="camera-section">
               <p className="camera-text">
-                Please upload proof of the issue using camera
+                Upload proof of the issue
               </p>
 
               <Cameracapture setImage={setImage} />
@@ -111,9 +135,8 @@ const Reportissue = () => {
               )}
             </div>
 
-            {/* SUBMIT */}
             <button type="submit" className="submit-btn">
-              Submit Issue
+              {editId ? "Update Issue" : "Submit Issue"}
             </button>
 
           </form>
