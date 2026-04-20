@@ -13,9 +13,6 @@ const initialState = {
   name: "",
   phone: "0000000000",
   image: null,
-
-  oldPassword: "",
-  newPassword: "",
 };
 
 function reducer(state, action) {
@@ -26,8 +23,8 @@ function reducer(state, action) {
     case "EDIT_MODE":
       return { ...state, editMode: true, passwordMode: false };
 
-    case "PASSWORD_MODE":
-      return { ...state, passwordMode: true, editMode: false };
+    // case "PASSWORD_MODE":
+    //   return { ...state, passwordMode: true, editMode: false };
 
     case "SET_NAME":
       return { ...state, name: action.payload };
@@ -38,11 +35,11 @@ function reducer(state, action) {
     case "SET_IMAGE":
       return { ...state, image: action.payload };
 
-    case "SET_OLD_PASSWORD":
-      return { ...state, oldPassword: action.payload };
+    // case "SET_OLD_PASSWORD":
+    //   return { ...state, oldPassword: action.payload };
 
-    case "SET_NEW_PASSWORD":
-      return { ...state, newPassword: action.payload };
+    // case "SET_NEW_PASSWORD":
+    //   return { ...state, newPassword: action.payload };
 
     case "CLOSE_ALL":
       return { ...state, editMode: false, passwordMode: false };
@@ -134,7 +131,7 @@ const Header = () => {
           {!state.editMode && !state.passwordMode && (
             <div className="menu">
               <button onClick={handleEditProfile}> Edit Profile</button>
-              <button onClick={handleChangePassword}> Change Password</button>
+              {/* <button onClick={handleChangePassword}> Change Password</button> */}
               <button className="logout" onClick={handleLogout}>
                 <img src={logout} alt="" />   Logout
               </button>

@@ -20,8 +20,7 @@ const Authupage = () => {
   const [confirmPassword, setConfirmPassword] = useState("");//NEW CONFORM PASS
 
   // REGISTER
-  let handleRegister = (e) => {
-    debugger;
+  let handleRegister = async (e) => {
     e.preventDefault();
 
     if (phone.length !== 10) {
@@ -34,109 +33,100 @@ const Authupage = () => {
       return;
     }
 
-    let existingUsers = JSON.parse(localStorage.getItem("users")) || [];
+    const userData = {
+      name: name,
+      phonenumber: phone,
+      password: password,
+    };
 
-    let userExists = existingUsers.find((user) => user.phone === phone);
+    try {
+      const response = await fetch("http://localhost:8011/user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
 
-    if (userExists) {
-      alert("User already exists!");
-      return;
+      const data = await response.json();
+
+      console.log("API Response:", data);
+
+      if (data.status === true) {
+        alert(data.message);
+
+        setActive(false);
+
+        setName("");
+        setPhone("");
+        setPassword("");
+        setConfirmPassword("");
+
+      } else {
+        alert(data.response);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Server Error");
     }
-
-    let newUser = { name, phone, password };
-    existingUsers.push(newUser);
-
-    localStorage.setItem("users", JSON.stringify(existingUsers));
-
-    alert("Registered Successfully!");
-    setActive(false);
-
-    setName("");
-    setPhone("");
-    setPassword("");
-    setConfirmPassword("");
   };
 
   // LOGIN
-  let handleLogin = (e) => {
+  let handleLogin = async (e) => {
     e.preventDefault();
-    debugger
 
-    let users = JSON.parse(localStorage.getItem("users")) || [];
-
-    switch (loginRole) {
-      // ADMIN 
-      case "admin":
-        if (loginPhone === "123456789" && loginPassword === "admin") {
-          alert("Admin Login Success");
-
-          setCurrentUserName("Admin");
-          setRole("admin");
-
-          navigate("/admin");
-        } else {
-          alert("Invalid Admin Credentials!");
-        }
-        break;
-
-      // CITIZEN 
-      case "citizen":
-        if (users.length === 0) {
-          alert("Please register first!");
-          break;
-        }
-
-        let validUser = users.find(
-          (user) =>
-            user.phone === loginPhone && user.password === loginPassword
-        );
-
-        if (validUser) {
-          alert("User Login Success!");
-
-          setCurrentUserName(validUser.name);
-          setRole("citizen");
-
-          navigate("/admin");
-        } else {
-          alert("Invalid User Credentials!");
-        }
-        break;
-
-      // MANAGER 
-      case "manager":
-        if (users.length === 0) {
-          alert("Please register first!");
-          break;
-        }
-
-        let manageruser= users.find(
-          (user) =>
-            user.phone === loginPhone && user.password === loginPassword
-        );
-
-        if (manageruser) {
-          alert("Manager Login Success!");
-
-          setCurrentUserName(manageruser.name);
-          setRole("manager");
-
-          navigate("/admin");
-        } else {
-          alert("Invalid  Credentials!");
-        }
-        break;
-
-
-      default:
-        alert("Please select a role!");
+    if (!loginRole) {
+      alert("Please select a role!");
+      return;
     }
 
+    const loginData = {
+      phonenumber: loginPhone,
+      password: loginPassword,
+      role: loginRole.toLowerCase()
+    };
 
+    console.log(loginData);
+
+    try {
+      const response = await fetch("http://localhost:8011/userlogin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(loginData),
+      });
+
+      const data = await response.json();
+
+      console.log("Login Response:", data);
+
+      if (data.status === true) {
+        alert("Login Success ");
+
+        // set username & role
+        setCurrentUserName(data.response.name);
+        setRole(data.response.role);
+
+        localStorage.setItem("userId", data.response._id)
+        
+        navigate("/app");
+
+      } else {
+        alert(data.message || "Invalid Credentials");
+      }
+
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Server Error ");
+    }
+
+    // clear fields
     setLoginPhone("");
     setLoginPassword("");
     setLoginRole("");
   };
+
   return (
     <div className="main-container">
 

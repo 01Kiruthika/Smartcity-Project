@@ -18,7 +18,7 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Authupage />} />
-        <Route path="/admin/*" element={<Dashboardlayout />} />
+        <Route path="/app/*" element={<Dashboardlayout />} />
         <Route path="/profile" element={<Profile />} />
       </Routes>
 

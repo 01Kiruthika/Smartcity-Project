@@ -14,30 +14,53 @@ const Reportissue = () => {
   const fileInputRef = useRef(null);
 
   // SUBMIT
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let today = new Date().toLocaleDateString();
+    const userId = localStorage.getItem("userId");
 
-    let newIssue = {
-      id: Date.now(),
-      user: currentUserName,
-      title,
-      location,
-      date: today,
-      image,
+    const complaintData = {
+      user_id: userId,
+      title: title,           
+      location: location,
+      proof: image,
       status: "Pending"
     };
 
-    console.log("Submitted Data:", newIssue);
-    alert("Submitted Successfully!");
+    console.log("Sending:", complaintData); 
 
-    setTitle("");
-    setLocation("");
-    setImage("");
+    try {
+      const response = await fetch("http://localhost:8011/complaint", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(complaintData),
+      });
 
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+      const data = await response.json();
+
+      console.log("Response:", data);
+
+      if (response.ok) {
+        alert("Complaint Submitted Successfully");
+
+        // clear form
+        setTitle("");
+        setLocation("");
+        setImage("");
+
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
+
+      } else {
+        alert(data.response || "Error");
+      }
+
+    } catch (error) {
+      console.error(error);
+      alert("Server Error");
     }
   };
 
