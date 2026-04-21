@@ -8,6 +8,7 @@ import Manageusers from "../adminpages/Manageusers.jsx";
 import Assignwork from "../adminpages/Assignwork.jsx";
 import Reports from "../adminpages/Reports.jsx";
 import Viewcomplaints from "../adminpages/Viewcomplaints.jsx";
+import CreateManager from "../adminpages/CreateManager.jsx";
 
 // USER PAGES
 import Userdashboard from "../userpages/Dashboard.jsx";
@@ -39,6 +40,7 @@ const Main = () => {
             <Route path="assign" element={<Assignwork />} />
             <Route path="reports" element={<Reports />} />
             <Route path="viewcomplaints" element={<Viewcomplaints />} />
+            <Route path="createmanager" element={<CreateManager />} />
 
           </>
         )}

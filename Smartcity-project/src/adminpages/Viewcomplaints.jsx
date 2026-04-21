@@ -1,56 +1,79 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./admin.css";
-import { FaEdit, FaTrash } from "react-icons/fa";
 
 const Viewcomplaints = () => {
-  const managers = ["John", "David", "Priya", "Arun"];
+  const [complaints, setComplaints] = useState([]);
+  const [managers, setManagers] = useState([]);
 
-  const sampleTimes = [
-    Date.now() - 2 * 3600000,
-    Date.now() - 1 * 86400000,
-    Date.now() - 3 * 86400000,
-    Date.now() - 5 * 3600000,
-    Date.now() - 7 * 86400000,
-    Date.now() - 30 * 60000,
-  ];
+  // Fetch data on load
+  useEffect(() => {
+    fetchComplaints();
+    fetchManagers();
+  }, []);
 
-  const titles = [
-    "Road Damage", "Broken Streetlight", "Garbage Overflow",
-    "Water Leakage",
-  ];
-
-  const locations = ["Trichy", "Chennai", "Madurai"];
-
-  const images = [
-    "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800",
-    "https://images.unsplash.com/photo-1473093226795-af9932fe5856?w=800",
-    "https://images.unsplash.com/photo-1605600659908-0ef719419d41?w=800",
-  ];
-
-  const statuses = ["Pending", "Resolved", "In Progress"];
-
-  const [complaints, setComplaints] = useState(
-    sampleTimes.map((time, i) => ({
-      id: i + 1,
-      title: titles[i],
-      location: locations[i],
-      date: new Date(time),
-      image: images[i],
-      status: statuses[i % 3],
-      assignedTo: "",
-    }))
-  );
-
-  const handleAssignManager = (id, manager) => {
-    setComplaints((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, assignedTo: manager } : c))
-    );
+  //  Fetch complaints
+  const fetchComplaints = async () => {
+    try {
+      const res = await fetch("http://localhost:8011/complaint");
+      const data = await res.json();
+      setComplaints(data.response || []);
+    } catch (err) {
+      console.error("Error fetching complaints:", err);
+    }
   };
 
+  //  Fetch managers
+  const fetchManagers = async () => {
+    try {
+      const res = await fetch("http://localhost:8011/manager");
+      const data = await res.json();
+      setManagers(data.response || []);
+    } catch (err) {
+      console.error("Error fetching managers:", err);
+    }
+  };
+
+  // Assign manager (API CALL)
+  const handleAssignManager = async (complaintId, managerId) => {
+    try {
+      const res = await fetch(`http://localhost:8011/assignmanager/${complaintId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          manager_id: managerId   // ✅ correct
+        })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setComplaints(prev =>
+          prev.map(c =>
+            c._id === complaintId
+              ? { ...c, manager_id: managerId, status: "InProgress" }
+              : c
+          )
+        );
+
+        alert("Manager assigned successfully");
+      } else {
+        alert(data.message);
+      }
+
+    } catch (err) {
+      console.error(err);
+      alert("Server error");
+    }
+  };
+
+  // Time ago
   const getTimeAgo = (date) => {
     const now = new Date();
     const past = new Date(date);
     const diff = Math.floor((now - past) / 1000);
+
     if (diff < 60) return "Just now";
     if (diff < 3600) return Math.floor(diff / 60) + " min ago";
     if (diff < 86400) return Math.floor(diff / 3600) + " hrs ago";
@@ -58,58 +81,79 @@ const Viewcomplaints = () => {
     return past.toLocaleDateString();
   };
 
+  //  Status color
   const getStatusColor = (status) => {
     switch (status) {
       case "Pending": return "#ef4444";
+      case "InProgress": return "#eab308";
       case "Resolved": return "#22c55e";
-      case "In Progress": return "#eab308";
       default: return "#6b7280";
     }
   };
 
   return (
     <div className="complaints-container">
-      <h2>All Complaints</h2>
+      <h2>Assign Complaints</h2>
 
       <div className="card-grid">
-        {complaints.slice(0, 3).map((c) => (
-          <article className="complaint-cards" key={c.id}>
-            <div className="image-container">
-              <img src={c.image} alt={c.title} loading="lazy" />
+        {complaints.length === 0 ? (
+          <p>No complaints found</p>
+        ) : (
+          complaints.map((c) => (
+            <article className="complaint-cards" key={c._id}>
+              <div className="image-container">
 
-              <span className="status" style={{ backgroundColor: getStatusColor(c.status) }}>
-                {c.status}
-              </span>
+                {/* IMAGE FROM BACKEND */}
+                <img
+                  src={c.proof || "https://via.placeholder.com/300"}
+                  alt={c.title}
+                />
 
-              <div className="card-actions">
-                <button aria-label="Edit"><FaEdit /></button>
-                <button aria-label="Delete"><FaTrash /></button>
-              </div>
-
-              <div className="overlay-content">
-                <h3>{c.title}</h3>
-                <p>{c.location}</p>
-                <p> {getTimeAgo(c.date)}</p>
-                <p>{c.date.toLocaleDateString()}</p>
-
-                <select
-                  className="assign-dropdown"
-                  value={c.assignedTo}
-                  onChange={(e) => handleAssignManager(c.id, e.target.value)}
+                {/* STATUS */}
+                <span
+                  className="status"
+                  style={{ backgroundColor: getStatusColor(c.status) }}
                 >
-                  <option value="">Assign Manager</option>
-                  {managers.map((m, i) => (
-                    <option key={i} value={m}>{m}</option>
-                  ))}
-                </select>
+                  {c.status || "Pending"}
+                </span>
 
-                {c.assignedTo && (
-                  <p className="assigned">Assigned to: {c.assignedTo}</p>
-                )}
+                <div className="overlay-content">
+                  <h3>{c.title}</h3>
+                  <p>{c.location}</p>
+
+                  {/* DATE */}
+                  <p>{getTimeAgo(c.createdAt)}</p>
+                  <p>{new Date(c.createdAt).toLocaleDateString()}</p>
+
+                  {/* ASSIGN MANAGER */}
+                  <select
+                    className="assign-dropdown"
+                    value={c.manager_id || ""}
+                    onChange={(e) =>
+                      handleAssignManager(c._id, e.target.value)
+                    }
+                  >
+                    <option value="">Assign Manager</option>
+
+                    {managers.map((m) => (
+                      <option key={m._id} value={m._id}>
+                        {m.name}
+                      </option>
+                    ))}
+                  </select>
+
+                  {/* SHOW ASSIGNED */}
+                  {c.manager_id && (
+                    <p className="assigned">
+                      Assigned to: {c.manager_id}
+                    </p>
+                  )}
+
+                </div>
               </div>
-            </div>
-          </article>
-        ))}
+            </article>
+          ))
+        )}
       </div>
     </div>
   );

@@ -19,12 +19,13 @@ const Aside = () => {
 
 
             {/* app MENU */}
-            {role === "app" && (
+            {role === "admin" && (
                <>
                   <li><Link to="/app"><i class="fa fa-tachometer" aria-hidden="true"></i>Dashboard</Link></li>
+                  <li><Link to="/app/CreateManager"><i className="fa fa-tasks" aria-hidden="true"></i>Manager</Link></li>
                   <li><Link to="/app/users"><i className="fa fa-users" aria-hidden="true"></i>User and Manger</Link></li>
-                  <li><Link to="/app/viewcomplaints"><i className="fa fa-clipboard" aria-hidden="true"></i>Complaint Management</Link></li>
-                  <li><Link to="/app/assign"><i className="fa fa-tasks" aria-hidden="true"></i>Assign Complaint</Link></li>
+                  <li><Link to="/app/viewcomplaints"><i className="fa fa-clipboard" aria-hidden="true"></i>Assign Complaints</Link></li>
+                  <li><Link to="/app/assign"><i className="fa fa-tasks" aria-hidden="true"></i>All Complaint</Link></li>
                   <li><Link to="/app/reports"><i className="fa fa-bar-chart" aria-hidden="true"></i>Reports</Link></li>
 
                </>
@@ -49,7 +50,7 @@ const Aside = () => {
                   <li><Link to="/app/assignedtask"><i class="fa fa-clipboard" aria-hidden="true"></i>Assigned Task</Link></li>
                   <li><Link to="/app/updatestatus"><i class="fa fa-refresh" aria-hidden="true"></i>Update Status</Link></li>
                   <li><Link to="/app/completedtask"><i class="fa fa-tachometer" aria-hidden="true"></i>Completed Task</Link></li>
-                  <li><Link to="/app/logout"><i class="fa fa-check-circle" aria-hidden="true"></i>Logout</Link></li>
+                  {/* <li><Link to="/app/logout"><i class="fa fa-check-circle" aria-hidden="true"></i>Logout</Link></li> */}
                </>
             )}
          </ul>

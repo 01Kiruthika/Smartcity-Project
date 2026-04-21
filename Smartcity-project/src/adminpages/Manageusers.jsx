@@ -1,26 +1,48 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./admin.css";
 
 const ManageUsers = () => {
+  const [selectedType, setSelectedType] = useState("all");
+  const [users, setUsers] = useState([]);
+  const [managers, setManagers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const [selectedType, setSelectedType] = useState("");
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-  // Users Data
-  const users = [
-    { id: 1, name: "Kumar", address: "Trichy", phone: "9876543210" },
-    { id: 2, name: "Divya", address: "Chennai", phone: "9876543211" }
-  ];
+  const fetchData = async () => {
+    try {
+      setLoading(true);
 
-  // Managers Data
-  const managers = [
-    { id: 1, name: "John", address: "Madurai", phone: "9876543220", complaints: 5 },
-    { id: 2, name: "Priya", address: "Coimbatore", phone: "9876543221", complaints: 3 }
+      const [userRes, managerRes] = await Promise.all([
+        fetch("http://localhost:8011/users"),
+        fetch("http://localhost:8011/manager"),
+      ]);
+
+      const userData = await userRes.json();
+      const managerData = await managerRes.json();
+
+      setUsers(userData.response || []);
+      setManagers(managerData.response || []);
+
+    } catch (err) {
+      console.error("Fetch Error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 🔁 Combine for "All"
+  const combinedData = [
+    ...users.map(u => ({ ...u, type: "User" })),
+    ...managers.map(m => ({ ...m, type: "Manager" }))
   ];
 
   return (
     <div className="table-container">
 
-      <h2> Users & Managers</h2>
+      <h2>Users & Managers</h2>
 
       {/* Dropdown */}
       <select
@@ -28,63 +50,98 @@ const ManageUsers = () => {
         value={selectedType}
         onChange={(e) => setSelectedType(e.target.value)}
       >
-        <option value="">Select Option</option>
-        <option value="user">User</option>
-        <option value="manager">Manager</option>
+        <option value="all">All</option>
+        <option value="user">Users</option>
+        <option value="manager">Managers</option>
       </select>
 
-      {/* Users Table */}
-      {selectedType === "user" && (
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Address</th>
-              <th>Phone</th>
-            </tr>
-          </thead>
+      {loading ? (
+        <p className="loading">Loading...</p>
+      ) : (
+        <>
+          {/*  ALL TABLE */}
+          {selectedType === "all" && (
+            combinedData.length > 0 ? (
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Phone</th>
+                    <th>Role</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {combinedData.map((item, index) => (
+                    <tr key={index}>
+                      <td>{item.name}</td>
+                      <td>{item.address}</td>
+                      <td>{item.phonenumber}</td>
+                      <td>{item.type}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p className="no-data">No records found</p>
+            )
+          )}
 
-          <tbody>
-            {users.map((u) => (
-              <tr key={u.id}>
-                <td>{u.id}</td>
-                <td>{u.name}</td>
-                <td>{u.address}</td>
-                <td>{u.phone}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+          {/* USERS */}
+          {selectedType === "user" && (
+            users.length > 0 ? (
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Phone</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {users.map((u, index) => (
+                    <tr key={index}>
+                      <td>{u.name}</td>
+                      <td>{u.address}</td>
+                      <td>{u.phonenumber}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p className="no-data">No users found</p>
+            )
+          )}
+
+          {/*  MANAGERS */}
+          {selectedType === "manager" && (
+            managers.length > 0 ? (
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Phone</th>
+                    <th>Allocated Complaints</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {managers.map((m, index) => (
+                    <tr key={index}>
+                      <td>{m.name}</td>
+                      <td>{m.address}</td>
+                      <td>{m.phonenumber}</td>
+                      <td>{m.complaints || 0}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p className="no-data">No managers found</p>
+            )
+          )}
+        </>
       )}
-
-      {/* Managers Table */}
-      {selectedType === "manager" && (
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Address</th>
-              <th>Phone</th>
-              <th>Allocated Complaints</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {managers.map((m) => (
-              <tr key={m.id}>
-                <td>{m.id}</td>
-                <td>{m.name}</td>
-                <td>{m.address}</td>
-                <td>{m.phone}</td>
-                <td>{m.complaints}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-
     </div>
   );
 };

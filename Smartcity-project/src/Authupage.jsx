@@ -16,6 +16,7 @@ const Authupage = () => {
   // REGISTER STATES
   const [name, setName] = useState("");// NEW NAME
   const [phone, setPhone] = useState("");//NEW PHONE
+  const [address, setaddress] = useState("");//NEW PHONE
   const [password, setPassword] = useState("");//NEW PASS
   const [confirmPassword, setConfirmPassword] = useState("");//NEW CONFORM PASS
 
@@ -36,6 +37,7 @@ const Authupage = () => {
     const userData = {
       name: name,
       phonenumber: phone,
+      address: address,
       password: password,
     };
 
@@ -59,6 +61,7 @@ const Authupage = () => {
 
         setName("");
         setPhone("");
+        setaddress("");
         setPassword("");
         setConfirmPassword("");
 
@@ -109,7 +112,7 @@ const Authupage = () => {
         setRole(data.response.role);
 
         localStorage.setItem("userId", data.response._id)
-        
+
         navigate("/app");
 
       } else {
@@ -202,6 +205,17 @@ const Authupage = () => {
                 required
               />
               <label>Your Phone Number</label>
+            </div>
+
+            <div className="input-group">
+              <input
+                type="text"
+                placeholder=" "
+                value={address}
+                onChange={(e) => setaddress(e.target.value)}
+                required
+              />
+              <label>Your Address</label>
             </div>
 
 
