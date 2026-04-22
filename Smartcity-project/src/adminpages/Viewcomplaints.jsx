@@ -1,74 +1,14 @@
 import React, { useEffect, useState } from "react";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import "./admin.css";
+import ComplaintCard from "../components/ComplaintCard.jsx";
 
 const Viewcomplaints = () => {
   const [complaints, setComplaints] = useState([]);
   const [managers, setManagers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Fetch data on load
-  useEffect(() => {
-    fetchComplaints();
-    fetchManagers();
-  }, []);
-
-  //  Fetch complaints
-  const fetchComplaints = async () => {
-    try {
-      const res = await fetch("http://localhost:8011/complaint");
-      const data = await res.json();
-      setComplaints(data.response || []);
-    } catch (err) {
-      console.error("Error fetching complaints:", err);
-    }
-  };
-
-  //  Fetch managers
-  const fetchManagers = async () => {
-    try {
-      const res = await fetch("http://localhost:8011/manager");
-      const data = await res.json();
-      setManagers(data.response || []);
-    } catch (err) {
-      console.error("Error fetching managers:", err);
-    }
-  };
-
-  // Assign manager (API CALL)
-  const handleAssignManager = async (complaintId, managerId) => {
-    try {
-      const res = await fetch(`http://localhost:8011/assignmanager/${complaintId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          manager_id: managerId   // ✅ correct
-        })
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        setComplaints(prev =>
-          prev.map(c =>
-            c._id === complaintId
-              ? { ...c, manager_id: managerId, status: "InProgress" }
-              : c
-          )
-        );
-
-        alert("Manager assigned successfully");
-      } else {
-        alert(data.message);
-      }
-
-    } catch (err) {
-      console.error(err);
-      alert("Server error");
-    }
-  };
-
-  // Time ago
+  // 🕒 Time ago
   const getTimeAgo = (date) => {
     const now = new Date();
     const past = new Date(date);
@@ -81,13 +21,57 @@ const Viewcomplaints = () => {
     return past.toLocaleDateString();
   };
 
-  //  Status color
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "Pending": return "#ef4444";
-      case "InProgress": return "#eab308";
-      case "Resolved": return "#22c55e";
-      default: return "#6b7280";
+  // 📦 Fetch data
+  const fetchData = async () => {
+    try {
+      const [complaintRes, managerRes] = await Promise.all([
+        fetch("http://localhost:8011/complaint"),
+        fetch("http://localhost:8011/manager"),
+      ]);
+
+      const complaintData = await complaintRes.json();
+      const managerData = await managerRes.json();
+
+      setComplaints(complaintData.response || []);
+      setManagers(managerData.response || []);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // ✅ Assign Manager
+  const handleAssign = async (complaintId, managerId) => {
+    try {
+      const selectedManager = managers.find(m => m._id === managerId);
+
+      const res = await fetch(
+        `http://localhost:8011/complaint/${complaintId}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            manager_id: managerId,
+            manager_name: selectedManager?.name,
+            status: "InProgress",
+          }),
+        }
+      );
+
+      if (res.ok) {
+        alert("Manager assigned successfully");
+        fetchData(); // refresh
+      } else {
+        alert("Failed to assign");
+      }
+
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -95,66 +79,65 @@ const Viewcomplaints = () => {
     <div className="complaints-container">
       <h2>Assign Complaints</h2>
 
-      <div className="card-grid">
-        {complaints.length === 0 ? (
-          <p>No complaints found</p>
-        ) : (
-          complaints.map((c) => (
-            <article className="complaint-cards" key={c._id}>
-              <div className="image-container">
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <div className="card-grid">
 
-                {/* IMAGE FROM BACKEND */}
-                <img
-                  src={c.proof || "https://via.placeholder.com/300"}
-                  alt={c.title}
-                />
+          {complaints.map((c) => (
+            <div key={c._id} className="card-wrapper">
 
-                {/* STATUS */}
-                <span
-                  className="status"
-                  style={{ backgroundColor: getStatusColor(c.status) }}
-                >
-                  {c.status || "Pending"}
-                </span>
-
-                <div className="overlay-content">
-                  <h3>{c.title}</h3>
-                  <p>{c.location}</p>
-
-                  {/* DATE */}
-                  <p>{getTimeAgo(c.createdAt)}</p>
-                  <p>{new Date(c.createdAt).toLocaleDateString()}</p>
-
-                  {/* ASSIGN MANAGER */}
-                  <select
-                    className="assign-dropdown"
-                    value={c.manager_id || ""}
-                    onChange={(e) =>
-                      handleAssignManager(c._id, e.target.value)
-                    }
-                  >
-                    <option value="">Assign Manager</option>
-
-                    {managers.map((m) => (
-                      <option key={m._id} value={m._id}>
-                        {m.name}
-                      </option>
-                    ))}
-                  </select>
-
-                  {/* SHOW ASSIGNED */}
-                  {c.manager_id && (
-                    <p className="assigned">
-                      Assigned to: {c.manager_id}
+              {/* ✅ ORIGINAL CARD (UNCHANGED) */}
+              <ComplaintCard
+                image={c.proof}
+                title={c.title}
+                status={c.status}
+                location={c.location}
+                date={c.createdAt} // keep original
+                actions={
+                  <>
+                    {/* 🕒 TIME AGO */}
+                    <p className="timeago">
+                      {getTimeAgo(c.createdAt)}
                     </p>
-                  )}
+                    {/* 🎯 ASSIGN DROPDOWN */}
+                    {c.status === "Pending" && (
+                      <select
+                        className="assign-dropdown"
+                        onChange={(e) =>
+                          handleAssign(c._id, e.target.value)
+                        }
+                      >
+                        <option value="">Assign Manager</option>
+                        {managers.map((m) => (
+                          <option key={m._id} value={m._id}>
+                            {m.name}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                    {/* 👤 ASSIGNED MANAGER */}
+                    {c.manager_name && (
+                      <p className="assigned">
+                        Assigned to: <strong>{c.manager_name}</strong>
+                      </p>
+                    )}
 
-                </div>
-              </div>
-            </article>
-          ))
-        )}
-      </div>
+
+                  </>
+                }
+              />
+
+
+
+
+
+
+            </div>
+          ))}
+
+        </div>
+      )}
     </div>
   );
 };

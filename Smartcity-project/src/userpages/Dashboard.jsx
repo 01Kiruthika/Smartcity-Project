@@ -7,54 +7,72 @@ const Dashboard = () => {
   const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch Complaints from Backend
+  // Fetch Complaints
+  const fetchComplaints = async () => {
+    try {
+      const userId = localStorage.getItem("userId");
+
+      const res = await fetch("http://localhost:8011/complaint");
+      const data = await res.json();
+
+      //  Filter only logged-in user's complaints
+      const userComplaints = (data.response || []).filter(
+        (c) => c.user_id == userId
+      );
+
+      setComplaints(userComplaints);
+    } catch (error) {
+      console.log("Error fetching complaints:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Auto Refresh (every 3 sec)
   useEffect(() => {
-    const fetchComplaints = async () => {
-      try {
-        const res = await fetch("http://localhost:8011/complaint");
-        const data = await res.json();
-
-        setComplaints(data.response || []);
-      } catch (error) {
-        console.log("Error fetching complaints:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchComplaints();
+
+    const interval = setInterval(() => {
+      fetchComplaints();
+    }, 3000);
+
+    return () => clearInterval(interval);
   }, []);
 
-  // Calculate Stats
+  // Safe Status Handling
   const total = complaints.length;
 
   const pending = complaints.filter(
-    (c) => c.status === "Pending"
+    (c) => c.status?.toLowerCase() === "pending"
   ).length;
 
   const inProgress = complaints.filter(
-    (c) => c.status === "In Progress"
+    (c) => c.status?.toLowerCase() === "inprogress"
   ).length;
 
   const resolved = complaints.filter(
-    (c) => c.status === "Resolved"
+    (c) => c.status?.toLowerCase() === "resolved"
   ).length;
 
-  // Pie Chart Data
+  // Pie Data
   const chartData = [
-    { id: "Total Complaints", value: total },
+    { id: "Total", value: total },
     { id: "Pending", value: pending },
     { id: "In Progress", value: inProgress },
     { id: "Resolved", value: resolved },
   ];
 
-  //Bar Chart Data
+  //  Bar Data
   const barData = [
-    { status: "Total Complaints", value: total },
+    { status: "Total", value: total },
     { status: "Pending", value: pending },
     { status: "In Progress", value: inProgress },
     { status: "Resolved", value: resolved },
   ];
+
+  if (loading) {
+    return <h3 style={{ textAlign: "center" }}>Loading...</h3>;
+  }
 
   return (
     <div className="dashboard-container ps-2">
@@ -138,7 +156,7 @@ const Dashboard = () => {
               padding={0.3}
 
               colors={({ data }) => {
-                if (data.status === "Total Complaints") return "#4CAF50";
+                if (data.status === "Total") return "#4CAF50";
                 if (data.status === "Pending") return "#FF9800";
                 if (data.status === "In Progress") return "#2196F3";
                 if (data.status === "Resolved") return "#9C27B0";
@@ -155,7 +173,6 @@ const Dashboard = () => {
                 <div
                   style={{
                     padding: "5px 20px",
-                    width: "150px",
                     background: "#222",
                     color: "#fff",
                     borderRadius: "5px",
@@ -172,6 +189,7 @@ const Dashboard = () => {
             />
           </div>
         </div>
+
       </div>
     </div>
   );

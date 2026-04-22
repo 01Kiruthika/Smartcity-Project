@@ -1,10 +1,24 @@
 import React, { useEffect, useState } from "react";
 import "./complaints.css";
+import ComplaintCard from "../components/ComplaintCard.jsx";
 
 const Assignwork = () => {
   const [complaints, setComplaints] = useState([]);
   const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true);
+  
+  const getTimeAgo = (date) => {
+    const now = new Date();
+    const past = new Date(date);
+    const diff = Math.floor((now - past) / 1000);
+
+    if (diff < 60) return "Just now";
+    if (diff < 3600) return Math.floor(diff / 60) + " min ago";
+    if (diff < 86400) return Math.floor(diff / 3600) + " hrs ago";
+    if (diff < 604800) return Math.floor(diff / 86400) + " days ago";
+    return past.toLocaleDateString();
+  };
+
 
   useEffect(() => {
     fetchComplaints();
@@ -25,26 +39,22 @@ const Assignwork = () => {
     }
   };
 
-  //  Filter
+  // ✅ FILTER (IMPORTANT FIX)
   const filteredComplaints =
     filter === "all"
       ? complaints
-      : complaints.filter((c) =>
-          c.status?.toLowerCase() === filter.toLowerCase()
-        );
-
-  // Date Format
-  const formatDate = (date) => {
-    if (!date) return "N/A";
-    return new Date(date).toLocaleDateString();
-  };
+      : complaints.filter(
+        (c) =>
+          (c.status || "Pending").toLowerCase() ===
+          filter.toLowerCase()
+      );
 
   return (
     <div className="complaints-container">
 
       <h2>All Complaints</h2>
 
-      {/* Dropdown */}
+      {/* ✅ FILTER DROPDOWN */}
       <select
         className="filter-dropdown"
         value={filter}
@@ -52,7 +62,7 @@ const Assignwork = () => {
       >
         <option value="all">All</option>
         <option value="Pending">Pending</option>
-        <option value="In Progress">In Progress</option>
+        <option value="InProgress">InProgress</option> {/* ✅ FIXED */}
         <option value="Solved">Solved</option>
       </select>
 
@@ -61,34 +71,40 @@ const Assignwork = () => {
       ) : filteredComplaints.length === 0 ? (
         <p className="no-data">No complaints found</p>
       ) : (
-        <div className="card-container">
-          {filteredComplaints.map((comp, index) => (
-            <div
-              className="complaint-card"
-              key={index}
-              style={{
-                backgroundImage: comp.proof
-                  ? `url(${comp.proof})`
-                  : "none",
-              }}
-            >
+        <div className="card-grid">
 
-              {/* Overlay content */}
-              <div className="card-overlay">
+          {filteredComplaints.map((comp) => (
+            <div key={comp._id} className="card-wrapper">
 
-                <h3>{comp.title}</h3>
+              {/* ✅ USING YOUR COMPONENT */}
+              <ComplaintCard
+                image={comp.proof}
+                title={comp.title}
+                status={comp.status}
+                location={comp.location}
+                date={comp.createdAt}
 
-                <p><strong>Location:</strong> {comp.location}</p>
+                actions={
+                  <>
+                    {/* 🕒 TIME AGO */}
+                    <p className="timeago">
+                      {getTimeAgo(comp.createdAt)}
+                    </p>
 
-                <p><strong>Date:</strong> {formatDate(comp.createdAt)}</p>
+                    {comp.manager_name && (
+                      <p className="assigned">
+                        Assigned to: <strong>{comp.manager_name}</strong>
+                      </p>
+                    )}
+                  </>
+                }
 
-                <span className={`status ${comp.status?.toLowerCase().replace(" ", "-")}`}>
-                  {comp.status || "Pending"}
-                </span>
 
-              </div>
+              />
+
             </div>
           ))}
+
         </div>
       )}
     </div>

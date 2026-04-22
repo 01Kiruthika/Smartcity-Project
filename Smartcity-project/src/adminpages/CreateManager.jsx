@@ -1,16 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./admin.css";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const CreateManager = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const editData = location.state?.manager;
+
   const [formData, setFormData] = useState({
     name: "",
     address: "",
+    email: "",
     phonenumber: "",
     password: ""
   });
 
-  // const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // ✅ Fill form when editing
+  useEffect(() => {
+    if (editData) {
+      setFormData({
+        name: editData.name || "",
+        address: editData.address || "",
+        phonenumber: editData.phonenumber || "",
+        email: editData.email || "",
+        password: "" // keep empty
+      });
+    }
+  }, [editData]);
 
   const handleChange = (e) => {
     setFormData({
@@ -23,35 +42,41 @@ const CreateManager = () => {
     e.preventDefault();
 
     if (formData.phonenumber.length !== 10) {
-      alert("❌ Phone number must be 10 digits");
+      alert("Phone number must be 10 digits");
       return;
     }
 
     try {
       setLoading(true);
 
-      const res = await fetch("http://localhost:8011/manager", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(formData)
-      });
+      let res;
+
+      // UPDATE
+      if (editData) {
+        res = await fetch(`http://localhost:8011/manager/${editData._id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(formData)
+        });
+      }
+      else {
+        res = await fetch("http://localhost:8011/manager", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData)
+        });
+      }
 
       const data = await res.json();
 
       if (res.ok) {
-        alert(" Manager created successfully");
+        alert(editData ? "Manager updated successfully" : "Manager created successfully");
 
-        setFormData({
-          name: "",
-          address: "",
-          phonenumber: "",
-          password: ""
-        });
-
+        navigate("/app/users"); // redirect back
       } else {
-        alert(` ${data.message || "Failed to create manager"}`);
+        alert(data.message || "Error");
       }
 
     } catch (err) {
@@ -61,11 +86,14 @@ const CreateManager = () => {
       setLoading(false);
     }
   };
+
   return (
     <div className="cm-container">
 
       <div className="cm-card">
-        <h2 className="cm-title">Create Manager</h2>
+        <h2 className="cm-title">
+          {editData ? "Edit Manager" : "Create Manager"}
+        </h2>
 
         <form onSubmit={handleSubmit} className="cm-form">
 
@@ -74,7 +102,6 @@ const CreateManager = () => {
             <input
               type="text"
               name="name"
-              placeholder="Enter manager name"
               value={formData.name}
               onChange={handleChange}
               required
@@ -86,8 +113,18 @@ const CreateManager = () => {
             <input
               type="text"
               name="address"
-              placeholder="Enter address"
               value={formData.address}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="cm-field">
+            <label>Email</label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
               onChange={handleChange}
               required
             />
@@ -98,7 +135,6 @@ const CreateManager = () => {
             <input
               type="text"
               name="phonenumber"
-              placeholder="Enter phone number"
               value={formData.phonenumber}
               onChange={handleChange}
               required
@@ -110,22 +146,22 @@ const CreateManager = () => {
             <input
               type="password"
               name="password"
-              placeholder="Enter password"
+              placeholder={editData ? "Leave blank to keep same password" : ""}
               value={formData.password}
               onChange={handleChange}
-              required
             />
           </div>
 
           <button type="submit" disabled={loading}>
-            {loading ? "Creating..." : "Create Manager"}
+            {loading
+              ? "Processing..."
+              : editData
+                ? "Update Manager"
+                : "Create Manager"}
           </button>
 
         </form>
-
-        {/* {message && <p className="cm-message">{message}</p>} */}
       </div>
-
     </div>
   );
 };

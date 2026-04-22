@@ -7,6 +7,7 @@ import "./user.css";
 const Mycomplaints = () => {
   const navigate = useNavigate();
   const [complaints, setComplaints] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchMyComplaints();
@@ -14,18 +15,18 @@ const Mycomplaints = () => {
 
   const fetchMyComplaints = async () => {
     try {
+      const userId = localStorage.getItem("userId");
+
       const res = await fetch("http://localhost:8011/complaint");
       const data = await res.json();
 
-      const userId = localStorage.getItem("userId");
+      setComplaints(data.response || []);
 
-      const myData = (data.response || []).filter(
-        (c) => c.user_id === userId
-      );
 
-      setComplaints(myData);
     } catch (error) {
-      console.error(error);
+      console.error("Fetch Error:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -39,7 +40,11 @@ const Mycomplaints = () => {
 
       if (res.ok) {
         alert("Deleted Successfully");
-        setComplaints((prev) => prev.filter((c) => c._id !== id));
+
+        // ✅ REMOVE FROM UI
+        setComplaints((prev) =>
+          prev.filter((c) => c._id !== id)
+        );
       }
     } catch (err) {
       console.error(err);
@@ -59,41 +64,49 @@ const Mycomplaints = () => {
 
       <div className="card-grid">
 
-        {complaints.length === 0 ? (
+        {loading ? (
+          <p>Loading...</p>
+        ) : complaints.length === 0 ? (
           <p>No complaints found</p>
         ) : (
-          complaints.map((c) => (
-            <div key={c._id} className="card-wrapper">
+          // ✅ EXTRA SAFETY FILTER DURING RENDER
+          complaints
+            .filter(
+              (c) =>
+                String(c.user_id) ===
+                String(localStorage.getItem("userId"))
+            )
+            .map((c) => (
+              <div key={c._id} className="card-wrapper">
 
-              <ComplaintCard
-                image={c.proof}
-                title={c.title}
-                status={c.status}
-                location={c.location}
-                date={c.createdAt}
+                <ComplaintCard
+                  image={c.proof}
+                  title={c.title}
+                  status={c.status}
+                  location={c.location}
+                  date={c.createdAt}
 
-                // PASS ACTIONS AS PROP
-                actions={
-                  <>
-                    <button
-                      onClick={() => handleEdit(c)}
-                      className="edit-btn"
-                    >
-                      <FaEdit />
-                    </button>
+                  actions={
+                    <>
+                      <button
+                        onClick={() => handleEdit(c)}
+                        className="edit-btn"
+                      >
+                        <FaEdit />
+                      </button>
 
-                    <button
-                      onClick={() => handleDelete(c._id)}
-                      className="delete-btn"
-                    >
-                      <FaTrash />
-                    </button>
-                  </>
-                }
-              />
+                      <button
+                        onClick={() => handleDelete(c._id)}
+                        className="delete-btn"
+                      >
+                        <FaTrash />
+                      </button>
+                    </>
+                  }
+                />
 
-            </div>
-          ))
+              </div>
+            ))
         )}
 
       </div>

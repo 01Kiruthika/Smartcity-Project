@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import "./admin.css";
+import { useNavigate } from "react-router-dom";
+import { FaEdit, FaTrash } from "react-icons/fa";
 
-const ManageUsers = () => {
+const Manageusers = () => {
   const [selectedType, setSelectedType] = useState("all");
   const [users, setUsers] = useState([]);
   const [managers, setManagers] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchData();
@@ -25,7 +29,6 @@ const ManageUsers = () => {
 
       setUsers(userData.response || []);
       setManagers(managerData.response || []);
-
     } catch (err) {
       console.error("Fetch Error:", err);
     } finally {
@@ -33,10 +36,39 @@ const ManageUsers = () => {
     }
   };
 
-  // 🔁 Combine for "All"
+  // ✅ DELETE MANAGER
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this manager?");
+    if (!confirmDelete) return;
+
+    try {
+      const res = await fetch(`http://localhost:8011/manager/${id}`, {
+        method: "DELETE",
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert(data.message || "Manager deleted successfully");
+        fetchData(); // refresh
+      } else {
+        alert(data.message || "Delete failed");
+      }
+
+    } catch (err) {
+      console.error(err);
+      alert("Server error");
+    }
+  };
+  // ✅ EDIT MANAGER
+  const handleEdit = (manager) => {
+    navigate("/app/CreateManager", { state: { manager } });
+  };
+
+  // 🔁 Combine
   const combinedData = [
-    ...users.map(u => ({ ...u, type: "User" })),
-    ...managers.map(m => ({ ...m, type: "Manager" }))
+    ...users.map((u) => ({ ...u, type: "User" })),
+    ...managers.map((m) => ({ ...m, type: "Manager" })),
   ];
 
   return (
@@ -44,7 +76,6 @@ const ManageUsers = () => {
 
       <h2>Users & Managers</h2>
 
-      {/* Dropdown */}
       <select
         className="dropdown"
         value={selectedType}
@@ -59,86 +90,85 @@ const ManageUsers = () => {
         <p className="loading">Loading...</p>
       ) : (
         <>
-          {/*  ALL TABLE */}
+          {/* ALL */}
           {selectedType === "all" && (
-            combinedData.length > 0 ? (
-              <table>
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Address</th>
-                    <th>Phone</th>
-                    <th>Role</th>
+            <table>
+              <thead>
+                <tr>
+                  <th>S.No</th>
+                  <th>Name</th>
+                  <th>Address</th>
+                  <th>Phone</th>
+                  <th>Role</th>
+                </tr>
+              </thead>
+              <tbody>
+                {combinedData.map((item, index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{item.name}</td>
+                    <td>{item.address}</td>
+                    <td>{item.phonenumber}</td>
+                    <td>{item.type}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {combinedData.map((item, index) => (
-                    <tr key={index}>
-                      <td>{item.name}</td>
-                      <td>{item.address}</td>
-                      <td>{item.phonenumber}</td>
-                      <td>{item.type}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : (
-              <p className="no-data">No records found</p>
-            )
+                ))}
+              </tbody>
+            </table>
           )}
 
           {/* USERS */}
           {selectedType === "user" && (
-            users.length > 0 ? (
-              <table>
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Address</th>
-                    <th>Phone</th>
+            <table>
+              <thead>
+                <tr>
+                  <th>S.No</th>
+                  <th>Name</th>
+                  <th>Address</th>
+                  <th>Phone</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map((u, index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{u.name}</td>
+                    <td>{u.address}</td>
+                    <td>{u.phonenumber}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {users.map((u, index) => (
-                    <tr key={index}>
-                      <td>{u.name}</td>
-                      <td>{u.address}</td>
-                      <td>{u.phonenumber}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : (
-              <p className="no-data">No users found</p>
-            )
+                ))}
+              </tbody>
+            </table>
           )}
 
-          {/*  MANAGERS */}
+          {/* MANAGERS */}
           {selectedType === "manager" && (
-            managers.length > 0 ? (
-              <table>
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Address</th>
-                    <th>Phone</th>
-                    <th>Allocated Complaints</th>
+            <table>
+              <thead>
+                <tr>
+                  <th>S.No</th>
+                  <th>Name</th>
+                  <th>Address</th>
+                  <th>Phone Number</th>
+                  <th>Email</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {managers.map((m, index) => (
+                  <tr key={m._id}>
+                    <td>{index + 1}</td>
+                    <td>{m.name}</td>
+                    <td>{m.address}</td>
+                    <td>{m.phonenumber}</td>
+                    <td>{m.email}</td>
+                    <td>
+                      <button onClick={() => handleEdit(m)}>  <FaEdit /> </button>
+                      <button onClick={() => handleDelete(m._id)}>  <FaTrash /> </button>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {managers.map((m, index) => (
-                    <tr key={index}>
-                      <td>{m.name}</td>
-                      <td>{m.address}</td>
-                      <td>{m.phonenumber}</td>
-                      <td>{m.complaints || 0}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : (
-              <p className="no-data">No managers found</p>
-            )
+                ))}
+              </tbody>
+            </table>
           )}
         </>
       )}
@@ -146,4 +176,4 @@ const ManageUsers = () => {
   );
 };
 
-export default ManageUsers;
+export default Manageusers;
