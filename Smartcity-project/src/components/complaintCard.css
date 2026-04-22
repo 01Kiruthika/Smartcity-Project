@@ -1,0 +1,397 @@
+:root {
+    --cc-radius: 14px;
+
+    --cc-card-w: 260px;
+    --cc-card-h: 200px;
+
+    --cc-font: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+
+    --cc-text: #ffffff;
+    --cc-text-muted: rgba(255, 255, 255, 0.85);
+    --cc-text-dim: rgba(255, 255, 255, 0.65);
+
+    --cc-shadow:
+        0 4px 12px rgba(0, 0, 0, .15),
+        0 2px 4px rgba(0, 0, 0, .08);
+    --cc-shadow-hover:
+        0 16px 32px -8px rgba(0, 0, 0, .35),
+        0 6px 12px rgba(0, 0, 0, .15);
+
+    --cc-status-pending: #ef4444;
+    --cc-status-progress: #f59e0b;
+    --cc-status-solved: #10b981;
+    --cc-status-default: #64748b;
+
+    --cc-accent: var(--cc-status-default);
+}
+
+
+/* ---------- GRID WRAPPER ---------- */
+.complaint-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+/* ---------- CARD ---------- */
+.complcard {
+    border: 2px solid red;
+    position: relative;
+    width: var(--cc-card-w);
+    max-width: 100%;
+    height: var(--cc-card-h);
+    border-radius: var(--cc-radius);
+    overflow: hidden;
+    font-family: var(--cc-font);
+    color: var(--cc-text);
+    background: #1a1a1a;
+    /* border: 2px/ solid var(--cc-accent); */
+    /* colored border like reference */
+    box-shadow: var(--cc-shadow);
+    cursor: pointer;
+    transition: transform .35s cubic-bezier(.22, 1, .36, 1),
+        box-shadow .35s ease,
+        border-color .25s ease;
+    isolation: isolate;
+}
+
+.complaint-grid .complcard {
+    width: 100%;
+}
+
+.complcard:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--cc-shadow-hover),
+        0 0 0 1px var(--cc-accent),
+        0 0 24px -6px var(--cc-accent);
+}
+
+.complcard:focus-visible {
+    outline: 2px solid var(--cc-accent);
+    outline-offset: 3px;
+}
+
+
+/* ---------- IMAGE FILLS BACKGROUND ---------- */
+.complcard .card-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    transition: transform .8s cubic-bezier(.22, 1, .36, 1);
+}
+
+.complcard:hover .card-img {
+    transform: scale(1.06);
+}
+
+
+/* ---------- DARK GRADIENT BOTTOM (text readability) ---------- */
+.complcard::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(0, 0, 0, 0) 45%,
+            rgba(0, 0, 0, .55) 70%,
+            rgba(0, 0, 0, .92) 100%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.icon {
+    font-size: 12px;
+    margin-right: 3px;
+}
+
+
+.complcard .status {
+    position: absolute;
+    top: -56px;
+    left: -8px;
+    z-index: 4;
+
+    width: max-content;
+
+
+    padding: 8px 18px;
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #fff;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    border-radius: 999px;
+    line-height: 1;
+    background: var(--cc-accent);
+
+    box-shadow:
+        0 3px 10px rgba(0, 0, 0, .35),
+        inset 0 1px 0 rgba(255, 255, 255, .3);
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    display: inline-flex;
+    align-items: center;
+}
+
+.complcard .status::before {
+    content: "";
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 6px rgba(255, 255, 255, .8);
+    animation: cc-blink 1.6s ease-in-out infinite;
+}
+
+@keyframes cc-blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: .4;
+    }
+}
+
+
+/* ---------- BODY (sits at bottom over gradient) ---------- */
+.complcard .compl-body {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 14px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+
+/* ---------- TYPOGRAPHY (with ellipsis) ---------- */
+.complcard .title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, .5);
+}
+
+.complcard .location {
+    margin: 0;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--cc-text-muted);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .4);
+}
+
+.complcard .location::before {
+    content: "📍";
+    font-size: 11px;
+    flex-shrink: 0;
+}
+
+.complcard .date {
+    margin: 0;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--cc-text-dim);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .4);
+}
+
+
+/* ---------- PER-STATUS BORDER + PILL COLOR ---------- */
+.complcard.pending,
+.complcard[data-status="Pending"] {
+    --cc-accent: var(--cc-status-pending);
+}
+
+.complcard.inprogress,
+.complcard.in-progress,
+.complcard[data-status="InProgress"] {
+    --cc-accent: var(--cc-status-progress);
+}
+
+.complcard.solved,
+.complcard[data-status="Solved"] {
+    --cc-accent: var(--cc-status-solved);
+}
+
+
+/* ---------- ACTIONS ---------- */
+.complcard .action-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, .15);
+}
+
+.complcard .action-container button,
+.complcard .action-container a {
+    background: rgba(255, 255, 255, .15);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, .28);
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: all .2s ease;
+}
+
+.complcard .action-container button:hover,
+.complcard .action-container a:hover {
+    background: var(--cc-accent);
+    border-color: var(--cc-accent);
+    transform: translateY(-1px);
+}
+
+
+/* ---------- LOADING SKELETON ---------- */
+.complcard--skeleton {
+    cursor: default;
+    border-color: #2a2a2a;
+}
+
+.complcard--skeleton:hover {
+    transform: none;
+    box-shadow: var(--cc-shadow);
+}
+
+.complcard--skeleton .card-img,
+.complcard--skeleton .compl-body>*,
+.complcard--skeleton .status {
+    background: linear-gradient(90deg,
+            #2a2a2a 0%,
+            #3a3a3a 50%,
+            #2a2a2a 100%) !important;
+    background-size: 200% 100% !important;
+    animation: cc-shimmer 1.4s linear infinite;
+    color: transparent !important;
+    border-radius: 6px;
+}
+
+@keyframes cc-shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+
+/* ---------- EMPTY STATE ---------- */
+.complcard--empty {
+    background: repeating-linear-gradient(135deg,
+            #f8fafc 0 12px,
+            transparent 12px 24px);
+    border: 2px dashed #cbd5e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 6px;
+    padding: 30px 20px;
+    cursor: default;
+    box-shadow: none;
+    color: #475569;
+}
+
+.complcard--empty:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.complcard--empty::before {
+    display: none;
+}
+
+.complcard--empty .empty-icon {
+    font-size: 34px;
+    opacity: .6;
+}
+
+.complcard--empty .empty-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+}
+
+.complcard--empty .empty-sub {
+    font-size: 12px;
+    color: #64748b;
+    margin: 0;
+}
+
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 480px) {
+    :root {
+        --cc-card-w: 100%;
+        --cc-card-h: 300px;
+    }
+
+    .complaint-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        padding: 14px;
+    }
+}
+
+@media (max-width: 360px) {
+    .complaint-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* ---------- REDUCED MOTION ---------- */
+@media (prefers-reduced-motion: reduce) {
+
+    .complcard,
+    .complcard .card-img,
+    .complcard .status::before,
+    .complcard--skeleton .card-img,
+    .complcard--skeleton .compl-body>* {
+        transition: none !important;
+        animation: none !important;
+    }
+}

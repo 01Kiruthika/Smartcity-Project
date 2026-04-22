@@ -1,5 +1,5 @@
 import { useState, useContext, useRef, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { UserName } from "../App.jsx";
 import "./user.css";
 import Cameracapture from "./Cameracapture.jsx";
@@ -8,6 +8,7 @@ import VoiceInput from "./VoiceInput.jsx";
 const Reportissue = () => {
   const { currentUserName } = useContext(UserName);
   const locationData = useLocation();
+  const navigate = useNavigate();
 
   const [editId, setEditId] = useState(null);
   const [title, setTitle] = useState("");
@@ -78,6 +79,8 @@ const Reportissue = () => {
         if (fileInputRef.current) {
           fileInputRef.current.value = "";
         }
+
+        navigate("/app/mycomplaints");
 
       } else {
         alert(data.message || "Error");

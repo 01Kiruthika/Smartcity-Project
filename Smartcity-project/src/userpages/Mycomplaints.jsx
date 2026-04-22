@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ComplaintCard from "../components/ComplaintCard.jsx";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import "./user.css";
 
@@ -45,82 +46,56 @@ const Mycomplaints = () => {
     }
   };
 
-  // SEND DATA VIA ROUTER STATE
   const handleEdit = (complaint) => {
     navigate("/app/report", { state: complaint });
   };
 
-  const getProgress = (status) => {
-    switch (status) {
-      case "Pending": return 0;
-      case "InProgress": return 50;
-      case "Solved": return 100;
-      default: return 0;
-    }
-  };
-
   return (
     <div className="report-container">
+
       <div className="report-head">
         <h2>My Complaints</h2>
       </div>
 
-      <div className="container">
-        <div className="row g-3">
+      <div className="card-grid">
 
-          {complaints.map((c) => (
-            <div className="col-6 col-md-4" key={c._id}>
-              <div className="complaint-wrapper">
+        {complaints.length === 0 ? (
+          <p>No complaints found</p>
+        ) : (
+          complaints.map((c) => (
+            <div key={c._id} className="card-wrapper">
 
-                <div className="complaint-card d-flex align-items-center">
-                  <img src={c.proof} alt="issue" className="card-img" />
+              <ComplaintCard
+                image={c.proof}
+                title={c.title}
+                status={c.status}
+                location={c.location}
+                date={c.createdAt}
 
-                  <div className="compl-body">
-                    <h4 className="title">{c.title}</h4>
-                    <p className="location">{c.location}</p>
-                    <p className="date">
-                      {new Date(c.createdAt).toLocaleDateString()}
-                    </p>
+                // PASS ACTIONS AS PROP
+                actions={
+                  <>
+                    <button
+                      onClick={() => handleEdit(c)}
+                      className="edit-btn"
+                    >
+                      <FaEdit />
+                    </button>
 
-                    <span className={`status ${c.status}`}>
-                      {c.status}
-                    </span>
+                    <button
+                      onClick={() => handleDelete(c._id)}
+                      className="delete-btn"
+                    >
+                      <FaTrash />
+                    </button>
+                  </>
+                }
+              />
 
-
-                    <div className="action-icons">
-                      <button onClick={() => handleEdit(c)} className="icon-btn edit">
-                        <FaEdit />
-                      </button>
-
-                      <button onClick={() => handleDelete(c._id)} className="icon-btn delete">
-                        <FaTrash />
-                      </button>
-                    </div>
-
-
-                  </div>
-
-
-                </div>
-
-                <div className="progress-container">
-                  <div className="progress-track">
-                    <div
-                      className={`progress-fill ${c.status}`}
-                      style={{ width: `${getProgress(c.status)}%` }}
-                    ></div>
-                  </div>
-
-                  <span className="progress-text">
-                    {getProgress(c.status)}%
-                  </span>
-                </div>
-
-              </div>
             </div>
-          ))}
+          ))
+        )}
 
-        </div>
       </div>
     </div>
   );
