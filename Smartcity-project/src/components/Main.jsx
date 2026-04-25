@@ -19,10 +19,9 @@ import Profile from "../userpages/Profile.jsx";
 
 //MANAGER PAGES
 import Managerdashboard from "../mangerpages/Dashboard.jsx";
-import Assignedtasks from "../mangerpages/Assignedtasks.jsx"
 import Completedtask from "../mangerpages/Completedtask.jsx"
 import Updatestatus from "../mangerpages/Updatestatus.jsx"
-import Managerlogout from "../mangerpages/Logout.jsx"
+// import Managerlogout from "../mangerpages/Logout.jsx"
 
 
 const Main = () => {
@@ -62,10 +61,9 @@ const Main = () => {
         {role === "manager" && (
           <>
             <Route path="/" element={<Managerdashboard />} />
-            <Route path="assignedtasks" element={<Assignedtasks />} />
             <Route path="completedtask" element={<Completedtask />} />
             <Route path="updatestatus" element={<Updatestatus />} />
-            <Route path="logout" element={<Managerlogout />} />
+            {/* <Route path="logout" element={<Managerlogout />} /> */}
           </>
         )}
 

@@ -51,7 +51,7 @@ const Dashboard = () => {
   ).length;
 
   const resolved = complaints.filter(
-    (c) => c.status?.toLowerCase() === "resolved"
+    (c) => c.status?.toLowerCase() === "solved"
   ).length;
 
   // Pie Data

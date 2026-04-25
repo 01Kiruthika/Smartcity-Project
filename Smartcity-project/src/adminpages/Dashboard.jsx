@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import DashboardCards from "../components/DashboardCards.jsx";
+import { ResponsivePie } from "@nivo/pie";
+import { ResponsiveBar } from "@nivo/bar";
 
 const Dashboard = () => {
   const [complaints, setComplaints] = useState([]);
@@ -12,29 +14,112 @@ const Dashboard = () => {
   }, []);
 
   const fetchData = async () => {
-    const [compRes, userRes, managerRes] = await Promise.all([
-      fetch("http://localhost:8011/complaint"),
-      fetch("http://localhost:8011/users"),
-      fetch("http://localhost:8011/manager"),
-    ]);
+    try {
+      const [compRes, userRes, managerRes] = await Promise.all([
+        fetch("http://localhost:8011/complaint"),
+        fetch("http://localhost:8011/users"),
+        fetch("http://localhost:8011/manager"),
+      ]);
 
-    const compData = await compRes.json();
-    const userData = await userRes.json();
-    const managerData = await managerRes.json();
+      const compData = await compRes.json();
+      const userData = await userRes.json();
+      const managerData = await managerRes.json();
 
-    setComplaints(compData.response || []);
-    setUsers(userData.response || []);
-    setManagers(managerData.response || []);
-    setLoading(false);
+      setComplaints(compData.response || []);
+      setUsers(userData.response || []);
+      setManagers(managerData.response || []);
+    } catch (err) {
+      console.error("Fetch Error:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const cards = [
-    { label: "Total Complaints", value: complaints.length, color: "blue" },
-    { label: "Total Users", value: users.length, color: "purple" },
-    { label: "Total Managers", value: managers.length, color: "orange" },
+  // ✅ TOTAL COUNTS
+  const totalComplaints = complaints.length;
+  const totalUsers = users.length;
+  const totalManagers = managers.length;
+
+  // ✅ PIE DATA (ONLY TOTALS)
+  const chartData = [
+    { id: "Complaints", value: totalComplaints },
+    { id: "Users", value: totalUsers },
+    { id: "Managers", value: totalManagers },
   ];
 
-  return <DashboardCards cards={cards} loading={loading} title="Admin Dashboard" />;
+  // ✅ BAR DATA (ONLY TOTALS)
+  const barData = [
+    { category: "Complaints", value: totalComplaints },
+    { category: "Users", value: totalUsers },
+    { category: "Managers", value: totalManagers },
+  ];
+
+  // ✅ CARDS
+  const cards = [
+    { label: "Total Complaints", value: totalComplaints, color: "blue" },
+    { label: "Total Users", value: totalUsers, color: "purple" },
+    { label: "Total Managers", value: totalManagers, color: "orange" },
+  ];
+
+  return (
+    <div>
+      <DashboardCards
+        cards={cards}
+        loading={loading}
+        title="Admin Dashboard"
+      />
+
+      <div className="row mt-4">
+
+        {/* PIE CHART */}
+        <div className="col-md-6">
+          <div style={{ height: "300px" }}>
+            <h3 style={{ textAlign: "center" }}>
+              System Overview
+            </h3>
+
+            <ResponsivePie
+              data={chartData}
+              margin={{ top: 10, right: 80, bottom: 80, left: 80 }}
+              innerRadius={0.4}
+              padAngle={2}
+              cornerRadius={5}
+              activeOuterRadiusOffset={10}
+              colors={{ scheme: "set2" }}
+              borderWidth={2}
+              arcLabelsSkipAngle={10}
+              arcLabelsTextColor="#fff"
+            />
+          </div>
+        </div>
+
+        {/* BAR CHART */}
+        <div className="col-md-6">
+          <h3 style={{ textAlign: "center" }}>
+            System Comparison
+          </h3>
+
+          <div style={{ height: "300px" }}>
+            <ResponsiveBar
+              data={barData}
+              keys={["value"]}
+              indexBy="category"
+              margin={{ top: 20, right: 20, bottom: 50, left: 50 }}
+              padding={0.3}
+              colors={({ data }) => {
+                if (data.category === "Complaints") return "#4CAF50";
+                if (data.category === "Users") return "#2196F3";
+                if (data.category === "Managers") return "#FF9800";
+                return "#ccc";
+              }}
+              enableLabel={false}
+            />
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
 };
 
 export default Dashboard;

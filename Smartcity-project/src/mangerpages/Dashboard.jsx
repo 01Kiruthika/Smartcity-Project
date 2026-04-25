@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { ResponsivePie } from "@nivo/pie";
+import { ResponsiveBar } from "@nivo/bar";
 import DashboardCards from "../components/DashboardCards.jsx";
 
 const Dashboard = () => {
@@ -12,30 +14,107 @@ const Dashboard = () => {
   }, []);
 
   const fetchData = async () => {
-    const res = await fetch("http://localhost:8011/complaint");
-    const data = await res.json();
+    try {
+      const res = await fetch("http://localhost:8011/complaint");
+      const data = await res.json();
 
-    // ✅ FILTER ONLY THIS MANAGER
-    const assigned = (data.response || []).filter(
-      (c) => String(c.manager_id) === String(managerId)
-    );
+      const assigned = (data.response || []).filter(
+        (c) => String(c.manager_id) === String(managerId)
+      );
 
-    setComplaints(assigned);
-    setLoading(false);
+      setComplaints(assigned);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // ✅ STATUS COUNTS
-  const assignedCount = complaints.length;
+  // ✅ COUNTS
+  const total = complaints.length;
+  // const pending = complaints.filter(c => c.status === "Pending").length;
   const inProgress = complaints.filter(c => c.status === "InProgress").length;
-  const solved = complaints.filter(c => c.status === "Solved").length;
+  const resolved = complaints.filter(c => c.status === "Solved").length;
 
-  const cards = [
-    { label: "Assigned Complaints", value: assignedCount, color: "blue" },
-    { label: "In Progress", value: inProgress,color: "purple"  },
-    { label: "Solved", value: solved,color: "orange"  },
+  // ✅ PIE DATA
+  const chartData = [
+    { id: "Total", value: total },
+    // { id: "Pending", value: pending },
+    { id: "In Progress", value: inProgress },
+    { id: "Resolved", value: resolved },
   ];
 
-  return <DashboardCards cards={cards} loading={loading} title="Manager Dashboard" />;
+  // ✅ BAR DATA
+  const barData = [
+    { status: "Total", value: total },
+    // { status: "Pending", value: pending },
+    { status: "In Progress", value: inProgress },
+    { status: "Resolved", value: resolved },
+  ];
+
+  // ✅ CARDS
+  const cards = [
+    { label: "Assigned Complaints", value: total, color: "blue" },
+    { label: "In Progress", value: inProgress, color: "purple" },
+    { label: "Solved", value: resolved, color: "orange" },
+  ];
+
+  return (
+    <div>
+      <DashboardCards cards={cards} loading={loading} title="Manager Dashboard" />
+
+      <div className="row mt-4">
+
+        {/* PIE */}
+        <div className="col-md-6">
+          <div style={{ height: "300px" }}>
+            <h3 style={{ textAlign: "center" }}>
+              Complaint Status Overview
+            </h3>
+
+            <ResponsivePie
+              data={chartData}
+              margin={{ top: 10, right: 80, bottom: 80, left: 80 }}
+              innerRadius={0.4}
+              padAngle={2}
+              cornerRadius={5}
+              activeOuterRadiusOffset={10}
+              colors={{ scheme: "set1" }}
+              borderWidth={2}
+              arcLabelsSkipAngle={10}
+              arcLabelsTextColor="#fff"
+            />
+          </div>
+        </div>
+
+        {/* BAR */}
+        <div className="col-md-6">
+          <h3 style={{ textAlign: "center" }}>
+            Complaint Comparison
+          </h3>
+
+          <div style={{ height: "300px" }}>
+            <ResponsiveBar
+              data={barData}
+              keys={["value"]}
+              indexBy="status"
+              margin={{ top: 20, right: 20, bottom: 50, left: 50 }}
+              padding={0.3}
+              colors={({ data }) => {
+                if (data.status === "Total") return "#4CAF50";
+                // if (data.status === "Pending") return "#FF9800";
+                if (data.status === "In Progress") return "#2196F3";
+                if (data.status === "Resolved") return "#9C27B0";
+                return "#ccc";
+              }}
+              enableLabel={false}
+            />
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
 };
 
 export default Dashboard;

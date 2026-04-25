@@ -19,7 +19,7 @@
 /* ===== DASHBOARD CONTAINER ===== */
 .admin-dashboard {
     position: relative;
-    min-height: 100vh;
+    /* min-height: 100vh; */
     padding: 8px 10px;
     background:
         radial-gradient(at 15% 20%, rgba(139, 92, 246, 0.12) 0px, transparent 50%),
