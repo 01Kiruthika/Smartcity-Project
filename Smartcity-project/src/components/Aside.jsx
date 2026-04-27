@@ -21,7 +21,7 @@ const Aside = () => {
             {/* app MENU */}
             {role === "admin" && (
                <>
-                  <li><Link to="/app"><i class="fa fa-tachometer" aria-hidden="true"></i>Dashboard</Link></li>
+                  <li><Link to="/app/"><i class="fa fa-tachometer" aria-hidden="true"></i>Dashboard</Link></li>
                   <li><Link to="/app/CreateManager"><i className="fa fa-tasks" aria-hidden="true"></i>Manager</Link></li>
                   <li><Link to="/app/users"><i className="fa fa-users" aria-hidden="true"></i>User and Manger</Link></li>
                   <li><Link to="/app/viewcomplaints"><i className="fa fa-clipboard" aria-hidden="true"></i>Assign Complaints</Link></li>
@@ -34,7 +34,7 @@ const Aside = () => {
             {/* USER MENU */}
             {role === "citizen" && (
                <>
-                  <li><Link to="/app"><i class="fa fa-tachometer" aria-hidden="true"></i>Dashboard</Link></li>
+                  <li><Link to="/app/"><i class="fa fa-tachometer" aria-hidden="true"></i>Dashboard</Link></li>
                   <li><Link to="/app/report"><i className="fa fa-pencil-square-o" aria-hidden="true"></i>Report Issue</Link></li>
                   <li><Link to="/app/mycomplaints"><i class="fa fa-list" aria-hidden="true"></i>My Complaints</Link></li>
                   <li><Link to="/app/trackstatus"><i class="fa fa-location-arrow" aria-hidden="true"></i>Track Status</Link></li>
@@ -46,7 +46,7 @@ const Aside = () => {
             {/* MANAGER MENU */}
             {role === "manager" && (
                <>
-                  <li><Link to="/app"><i class="fa fa-tachometer" aria-hidden="true"></i>Dashboard</Link></li>
+                  <li><Link to="/app/"><i class="fa fa-tachometer" aria-hidden="true"></i>Dashboard</Link></li>
                   <li><Link to="/app/updatestatus"><i class="fa fa-refresh" aria-hidden="true"></i>Update Status</Link></li>
                   <li><Link to="/app/completedtask"><i class="fa fa-tachometer" aria-hidden="true"></i>Completed Task</Link></li>
                   {/* <li><Link to="/app/logout"><i class="fa fa-check-circle" aria-hidden="true"></i>Logout</Link></li> */}

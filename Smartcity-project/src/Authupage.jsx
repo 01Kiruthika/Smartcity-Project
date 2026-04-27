@@ -115,7 +115,7 @@ const Authupage = () => {
 
         console.log("Logged in userId:", data.response._id);
 
-       navigate("/app");
+       navigate("/app/");
 
       } else {
         alert(data.message || "Invalid Credentials");

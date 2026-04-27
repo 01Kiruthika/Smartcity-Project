@@ -111,7 +111,7 @@
     padding: 12px;
     background: #fff;
     border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
     transition: 0.3s;
 }
 
@@ -346,4 +346,21 @@
 
 .voice-container button:hover {
     background: #1e40af;
+}
+
+
+.card-grids {
+    /* border: 2px solid red; */
+    display: flex;
+    justify-content: start;
+    gap: 25px;
+    padding: 8px 10px;
+}
+
+.card-wrappers {
+    /* border: 2px solid; */
+    width: 240px;
+    height: 200px;
+
+
 }

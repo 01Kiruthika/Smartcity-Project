@@ -1,5 +1,10 @@
-import React from "react";
-import { FaMapMarkerAlt, FaCalendarAlt } from "react-icons/fa";
+import React, { useState } from "react";
+import {
+    FaMapMarkerAlt,
+    FaCalendarAlt,
+    FaEye,
+    FaTimes
+} from "react-icons/fa";
 import "./complaintCard.css";
 
 const ComplaintCard = ({
@@ -11,6 +16,8 @@ const ComplaintCard = ({
     actions
 }) => {
 
+    const [open, setOpen] = useState(false);
+
     const getStatusColor = (status) => {
         switch (status) {
             case "Pending": return "red";
@@ -21,38 +28,92 @@ const ComplaintCard = ({
     };
 
     return (
-        <div className="complcard">
+        <>
+            {/* CARD */}
+            <div className="complcard">
 
-            <img
-                src={image || "https://via.placeholder.com/150"}
-                alt={title}
-                className="card-img"
-            />
+                <button className="view-btn" onClick={() => setOpen(true)}>
+                    View
+                </button>
 
-            <div className="compl-body">
+                <div className="cards-image">
+                    <img
+                        src={image || "https://via.placeholder.com/150"}
+                        alt={title}
+                    />
+                </div>
 
-                <h4 className="title">{title}</h4>
-                <p className="location"><FaMapMarkerAlt className="icon" />{location}</p>
-                <p className="date"> <FaCalendarAlt className="icon" />
-                    {new Date(date).toLocaleDateString()}
-                </p>
+                <div className="compl-body">
+                    <h4 className="title">{title}</h4>
 
-                <span
-                    className="status"
-                    style={{ backgroundColor: getStatusColor(status) }}
-                >
-                    {status}
-                </span>
+                    <p className="locations">
+                        <FaMapMarkerAlt className="icon" />
+                        {location}
+                    </p>
 
-                {/* ✅ SHOW ONLY IF PASSED */}
-                {actions && (
-                    <div className="action-container">
-                        {actions}
-                    </div>
-                )}
+                    <p className="dates">
+                        <FaCalendarAlt className="icon" />
+                        {new Date(date).toLocaleDateString()}
+                    </p>
 
+                    <span
+                        className="status"
+                        style={{ backgroundColor: getStatusColor(status) }}
+                    >
+                        {status}
+                    </span>
+                </div>
             </div>
-        </div>
+
+            {/* MODAL */}
+            {open && (
+                <div className="modal-overlay" onClick={() => setOpen(false)}>
+
+                    <div
+                        className="modal-content"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <button
+                            className="close-icons"
+                            onClick={() => setOpen(false)}
+                        >
+                            <FaTimes />
+                        </button>
+
+                        <h2 className="modal-title">{title}</h2>
+
+                        <img
+                            src={image || "https://via.placeholder.com/300"}
+                            alt="full"
+                            className="modal-img"
+                        />
+
+                        <p className="modal-info">
+                            <FaMapMarkerAlt /> {location}
+                        </p>
+
+                        <p className="modal-info">
+                            <FaCalendarAlt /> {new Date(date).toLocaleDateString()}
+                        </p>
+
+                        <p className="modal-status">
+                            Status:
+                            <span style={{ color: getStatusColor(status) }}>
+                                {" "}{status}
+                            </span>
+                        </p>
+
+                        {/* ✅ ACTIONS INSIDE MODAL */}
+                        {actions && (
+                            <div className="modal-actions">
+                                {actions}
+                            </div>
+                        )}
+
+                    </div>
+                </div>
+            )}
+        </>
     );
 };
 

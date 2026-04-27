@@ -34,7 +34,7 @@ const Main = () => {
         {/* ADMIN ROUTES */}
         {role === "admin" && (
           <>
-            <Route path="/" element={<Dashboard />} />
+            <Route index element={<Dashboard />} />
             <Route path="users" element={<Manageusers />} />
             <Route path="assign" element={<Assignwork />} />
             <Route path="reports" element={<Reports />} />
@@ -47,7 +47,7 @@ const Main = () => {
         {/* USER ROUTES */}
         {role === "citizen" && (
           <>
-            <Route path="/" element={< Userdashboard />} />
+            <Route index element={<Userdashboard />} />
             <Route path="report" element={<Reportissue />} />
             <Route path="mycomplaints" element={<Mycomplaints />} />
             <Route path="trackstatus" element={<Trackstatus />} />
@@ -60,7 +60,7 @@ const Main = () => {
         {/* MANAGER ROUTES */}
         {role === "manager" && (
           <>
-            <Route path="/" element={<Managerdashboard />} />
+            <Route index element={<Managerdashboard />} />
             <Route path="completedtask" element={<Completedtask />} />
             <Route path="updatestatus" element={<Updatestatus />} />
             {/* <Route path="logout" element={<Managerlogout />} /> */}

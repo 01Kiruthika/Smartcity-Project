@@ -4,9 +4,11 @@ import { UserName } from "../App.jsx";
 import "./user.css";
 import Cameracapture from "./Cameracapture.jsx";
 import VoiceInput from "./VoiceInput.jsx";
+import { UserContext } from "../UserContext.jsx";
 
 const Reportissue = () => {
   const { currentUserName } = useContext(UserName);
+  const { userId } = useContext(UserContext); // ✅ GLOBAL USER
   const locationData = useLocation();
   const navigate = useNavigate();
 
@@ -17,7 +19,7 @@ const Reportissue = () => {
 
   const fileInputRef = useRef(null);
 
-  // LOAD EDIT DATA FROM ROUTER
+  // ✅ LOAD EDIT DATA
   useEffect(() => {
     if (locationData.state) {
       const c = locationData.state;
@@ -27,19 +29,21 @@ const Reportissue = () => {
       setImage(c.proof || "");
       setEditId(c._id);
     } else {
-      // normal open → empty
       setTitle("");
       setLocation("");
       setImage("");
       setEditId(null);
     }
-  }, [locationData.state]);
+  }, [locationData.state, userId]); // ✅ FIXED
 
-  // SUBMIT
+  // ✅ SUBMIT FUNCTION
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      alert("User not logged in");
+      return;
+    }
 
     const complaintData = {
       user_id: userId,
@@ -71,6 +75,7 @@ const Reportissue = () => {
       if (response.ok) {
         alert(editId ? "Updated Successfully" : "Complaint Submitted Successfully");
 
+        // RESET FORM
         setTitle("");
         setLocation("");
         setImage("");
@@ -81,7 +86,6 @@ const Reportissue = () => {
         }
 
         navigate("/app/mycomplaints");
-
       } else {
         alert(data.message || "Error");
       }
@@ -104,10 +108,12 @@ const Reportissue = () => {
           <form onSubmit={handleSubmit}>
             <h3 className="report-subtitle">Describe the Problem</h3>
 
+            {/* 🎤 Voice Input */}
             <div className="voice-row">
               <VoiceInput onTextDetected={(text) => setTitle(text)} />
             </div>
 
+            {/* TITLE */}
             <input
               type="text"
               placeholder="Issue"
@@ -117,6 +123,7 @@ const Reportissue = () => {
               required
             />
 
+            {/* LOCATION */}
             <input
               type="text"
               placeholder="Location"
@@ -126,6 +133,7 @@ const Reportissue = () => {
               required
             />
 
+            {/* CAMERA */}
             <div className="camera-section">
               <p className="camera-text">
                 Upload proof of the issue
@@ -133,11 +141,24 @@ const Reportissue = () => {
 
               <Cameracapture setImage={setImage} />
 
+              {/* PREVIEW */}
               {image && (
-                <img src={image} alt="preview" className="preview-img" />
+                <img
+                  src={image}
+                  alt="preview"
+                  className="preview-img"
+                  style={{
+                    width: "150px",
+                    height: "120px",
+                    objectFit: "cover",
+                    borderRadius: "8px",
+                    marginTop: "10px"
+                  }}
+                />
               )}
             </div>
 
+            {/* SUBMIT */}
             <button type="submit" className="submit-btn">
               {editId ? "Update Issue" : "Submit Issue"}
             </button>

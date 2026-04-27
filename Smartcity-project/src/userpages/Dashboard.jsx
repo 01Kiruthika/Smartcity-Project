@@ -3,6 +3,7 @@ import { ResponsivePie } from "@nivo/pie";
 import { ResponsiveBar } from "@nivo/bar";
 import "./user.css";
 
+
 const Dashboard = () => {
   const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(true);

@@ -62,6 +62,7 @@ const Header = () => {
     name: currentUserName,
     image: logo,
   });
+  
 
 
   useEffect(() => {

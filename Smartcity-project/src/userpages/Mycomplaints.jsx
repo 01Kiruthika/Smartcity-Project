@@ -62,7 +62,7 @@ const Mycomplaints = () => {
         <h2>My Complaints</h2>
       </div>
 
-      <div className="card-grid">
+      <div className="card-grids">
 
         {loading ? (
           <p>Loading...</p>
@@ -77,7 +77,7 @@ const Mycomplaints = () => {
                 String(localStorage.getItem("userId"))
             )
             .map((c) => (
-              <div key={c._id} className="card-wrapper">
+              <div key={c._id} className="card-wrappers">
 
                 <ComplaintCard
                   image={c.proof}
