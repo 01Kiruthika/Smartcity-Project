@@ -70,3 +70,260 @@
     gap: 16px;
   }
 }
+
+/* ============================================
+   manager.css — Update Status Page
+   Theme: Smart City — Dark Green + Mint
+   ============================================ */
+
+/* @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap'); */
+
+:root {
+  --bg: #eaf4ef;
+  --surface: #ffffff;
+  --border: #c2ddd0;
+  --accent: #1b5e3b;
+  --accent-mid: #2e7d55;
+  --accent-light: #4caf80;
+  --accent-dim: #e0f0e9;
+  --text-primary: #102a1e;
+  --text-secondary: #4a6e5a;
+  --text-muted: #90b09e;
+  --shadow-sm: 0 2px 8px rgba(27, 94, 59, 0.08);
+  --shadow-md: 0 6px 24px rgba(27, 94, 59, 0.12);
+  --shadow-lg: 0 16px 48px rgba(27, 94, 59, 0.15);
+  --radius: 14px;
+  --radius-sm: 8px;
+  --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ─── Page Container ──────────────────────────── */
+
+.manager-container {
+  min-height: 100vh;
+  background-color: var(--bg);
+  animation: fadeUp 0.4s ease both;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─── Page Header ─────────────────────────────── */
+
+.manager-head {
+  background: var(--accent);
+  padding: 28px 40px 26px;
+  position: relative;
+  overflow: hidden;
+}
+
+.manager-head::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 80% at 90% 50%, rgba(255, 255, 255, 0.07) 0%, transparent 70%),
+    repeating-linear-gradient(-45deg,
+      transparent,
+      transparent 18px,
+      rgba(255, 255, 255, 0.03) 18px,
+      rgba(255, 255, 255, 0.03) 19px);
+  pointer-events: none;
+}
+
+.manager-head h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 400;
+  color: #fff;
+  letter-spacing: -0.01em;
+  position: relative;
+}
+
+.manager-head h2::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.45);
+  border-radius: 2px;
+  margin-top: 8px;
+}
+
+/* ─── State Messages ──────────────────────────── */
+
+.manager-state-msg {
+  text-align: center;
+  color: var(--text-secondary);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem;
+  padding: 60px 20px;
+}
+
+/* ─── Card Grid ───────────────────────────────── */
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 22px;
+  padding: 32px 36px 48px;
+}
+
+/* ─── Status Dropdown ─────────────────────────── */
+
+.status-select {
+  width: 100%;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231b5e3b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.status-select:focus {
+  border-color: var(--accent-mid);
+  box-shadow: 0 0 0 3px rgba(46, 125, 85, 0.15);
+}
+
+.status-select:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  background-color: #f0f0f0;
+}
+
+/* ─── Completed Proof ─────────────────────────── */
+
+.proof-wrapper {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.proof-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.proof-img {
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.proof-img:hover {
+  transform: scale(1.08);
+  box-shadow: var(--shadow-md);
+}
+
+/* ─── Camera Proof Section ────────────────────── */
+
+.camera-proof-section {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  background: var(--accent-dim);
+  border: 1.5px dashed var(--accent-mid);
+  border-radius: var(--radius-sm);
+  padding: 14px 12px;
+}
+
+/* ─── Captured Preview ────────────────────────── */
+
+.captured-preview {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ─── Submit Proof Button ─────────────────────── */
+
+.submit-proof-btn {
+  width: 100%;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 10px 18px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition:
+    background var(--transition),
+    transform var(--transition),
+    box-shadow var(--transition);
+}
+
+.submit-proof-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, 0.12) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+}
+
+.submit-proof-btn:hover {
+  background: var(--accent-mid);
+  box-shadow: 0 4px 16px rgba(27, 94, 59, 0.3);
+  transform: translateY(-1px);
+}
+
+.submit-proof-btn:hover::after {
+  transform: translateX(100%);
+}
+
+.submit-proof-btn:active {
+  transform: translateY(0);
+}
+
+/* ─── Responsive ──────────────────────────────── */
+
+@media (max-width: 600px) {
+  .manager-head {
+    padding: 20px 20px 18px;
+  }
+
+  .card-grid {
+    grid-template-columns: 1fr;
+    padding: 20px 14px 40px;
+  }
+}

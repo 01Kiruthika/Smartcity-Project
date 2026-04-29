@@ -526,20 +526,3 @@
         font-size: 26px;
     }
 }
-
-/* ============================================
-   REDUCED MOTION
-   ============================================ */
-@media (prefers-reduced-motion: reduce) {
-
-    .main-container,
-    .main-container::before,
-    .main-container::after,
-    .toggle,
-    .form-container,
-    .toggle-container,
-    .toggle-panel {
-        animation: none !important;
-        transition: none !important;
-    }
-}

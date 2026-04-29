@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import ComplaintCard from "../components/ComplaintCard.jsx";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import "./user.css";
+import authFetch from "../Utils/authFetch.js"
+
 
 const Mycomplaints = () => {
   const navigate = useNavigate();
@@ -15,9 +17,9 @@ const Mycomplaints = () => {
 
   const fetchMyComplaints = async () => {
     try {
-      const userId = localStorage.getItem("userId");
+      // const token = localStorage.getItem("token");
 
-      const res = await fetch("http://localhost:8011/complaint");
+      const res = await authFetch("http://localhost:8011/complaint");
       const data = await res.json();
 
       setComplaints(data.response || []);
@@ -34,14 +36,17 @@ const Mycomplaints = () => {
     if (!window.confirm("Do you want to delete this complaint?")) return;
 
     try {
-      const res = await fetch(`http://localhost:8011/complaint/${id}`, {
+      // const token = localStorage.getItem("token");
+
+      const res = await authFetch(`http://localhost:8011/complaint/${id}`, {
         method: "DELETE",
       });
 
+      
       if (res.ok) {
         alert("Deleted Successfully");
 
-        // ✅ REMOVE FROM UI
+        //  REMOVE FROM UI
         setComplaints((prev) =>
           prev.filter((c) => c._id !== id)
         );
@@ -56,9 +61,9 @@ const Mycomplaints = () => {
   };
 
   return (
-    <div className="report-container">
+    <div className="complaint-container">
 
-      <div className="report-head">
+      <div className="complaint-head">
         <h2>My Complaints</h2>
       </div>
 

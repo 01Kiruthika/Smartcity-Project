@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ComplaintCard from "../components/ComplaintCard.jsx";
 import Cameracapture from "../userpages/Cameracapture.jsx";
 import "./manager.css";
+import authFetch from "../Utils/authFetch.js"
 
 const Updatestatus = () => {
     const [complaints, setComplaints] = useState([]);
@@ -21,7 +22,7 @@ const Updatestatus = () => {
         try {
             setLoading(true);
 
-            const res = await fetch(
+            const res = await authFetch(
                 `http://localhost:8011/getcomplaint/${managerId}`
             );
 
@@ -51,29 +52,22 @@ const Updatestatus = () => {
         }
     };
 
-
     const handleStatusChange = (id, newStatus) => {
         if (newStatus === "Solved") {
-            setSelectedId(id); // open camera
+            setSelectedId(id);
         } else {
             updateStatus(id, newStatus, null);
         }
     };
 
-
     const updateStatus = async (id, status, image) => {
         try {
-            const res = await fetch(
+            const res = await authFetch(
                 `http://localhost:8011/managerupdate/${id}`,
                 {
                     method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        status: status,
-                        completedProof: image
-                    })
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ status, completedProof: image })
                 }
             );
 
@@ -83,13 +77,12 @@ const Updatestatus = () => {
                 setComplaints((prev) =>
                     prev.map((c) =>
                         c._id === id
-                            ? { ...c, status: status, completedProof: image }
+                            ? { ...c, status, completedProof: image }
                             : c
                     )
                 );
             }
 
-            // reset
             setSelectedId(null);
             setCapturedImage(null);
 
@@ -100,12 +93,15 @@ const Updatestatus = () => {
 
     return (
         <div className="manager-container">
-            <h2>Assigned Complaints</h2>
+
+            <div className="manager-head">
+                <h2>Assigned Complaints</h2>
+            </div>
 
             {loading ? (
-                <p>Loading...</p>
+                <p className="manager-state-msg">Loading...</p>
             ) : complaints.length === 0 ? (
-                <p>No complaints assigned</p>
+                <p className="manager-state-msg">No complaints assigned</p>
             ) : (
                 <div className="card-grid">
                     {complaints.map((c) => (
@@ -119,8 +115,9 @@ const Updatestatus = () => {
 
                             actions={
                                 <>
-                                    {/* DROPDOWN */}
+                                    {/* STATUS DROPDOWN */}
                                     <select
+                                        className="status-select"
                                         value={c.status}
                                         disabled={c.status === "Solved"}
                                         onChange={(e) =>
@@ -132,30 +129,21 @@ const Updatestatus = () => {
                                         <option value="Solved">Solved</option>
                                     </select>
 
-                                    {/*  SHOW PROOF IMAGE */}
+                                    {/* COMPLETED PROOF IMAGE */}
                                     {c.completedProof && (
-                                        <div style={{ marginTop: "-25px", textAlign: "center" }}>
-                                            <p style={{ fontSize: "12px", marginBottom: "4px" }}>
-                                                <b>Proof</b>
-                                            </p>
-
+                                        <div className="proof-wrapper">
+                                            <p className="proof-label">Proof</p>
                                             <img
                                                 src={c.completedProof}
                                                 alt="proof"
-                                                style={{
-                                                    width: "40px",
-                                                    height: "40px",
-                                                    objectFit: "cover",
-                                                    borderRadius: "6px",
-                                                    border: "1px solid #ccc"
-                                                }}
+                                                className="proof-img"
                                             />
                                         </div>
                                     )}
 
-                                    {/* CAMERA */}
+                                    {/* CAMERA FOR SOLVED PROOF */}
                                     {selectedId === c._id && (
-                                        <div style={{ marginTop: "10px" }}>
+                                        <div className="camera-proof-section">
                                             <Cameracapture setImage={setCapturedImage} />
 
                                             {capturedImage && (
@@ -163,10 +151,10 @@ const Updatestatus = () => {
                                                     <img
                                                         src={capturedImage}
                                                         alt="preview"
-                                                        style={{ width: "50px", height: "50px" }}
+                                                        className="captured-preview"
                                                     />
-                                                    <br />
                                                     <button
+                                                        className="submit-proof-btn"
                                                         onClick={() =>
                                                             updateStatus(c._id, "Solved", capturedImage)
                                                         }

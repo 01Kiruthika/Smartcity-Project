@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import "./adminReport.css";
+import authFetch from "../Utils/authFetch.js"
+
 
 import {
   Chart as ChartJS,
@@ -31,7 +33,7 @@ const Reports = () => {
 
   // ================= FETCH DATA =================
   useEffect(() => {
-    fetch("http://localhost:8011/complaint")
+    authFetch("http://localhost:8011/complaint")
       .then((res) => res.json())
       .then((data) => {
         const complaintArray = data.response || [];

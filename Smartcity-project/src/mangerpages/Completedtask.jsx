@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ComplaintCard from "../components/ComplaintCard.jsx";
 import "./manager.css";
+import authFetch from "../Utils/authFetch.js"
 
 const Completedtask = () => {
   const [complaints, setComplaints] = useState([]);
@@ -18,7 +19,7 @@ const Completedtask = () => {
     try {
       setLoading(true);
 
-      const res = await fetch(
+      const res = await authFetch(
         `http://localhost:8011/getcomplaint/${managerId}`
       );
 
@@ -26,7 +27,7 @@ const Completedtask = () => {
 
       if (data.status) {
 
-        // ✅ FILTER ONLY SOLVED
+        //  FILTER ONLY SOLVED
         const solvedTasks = data.response
           .filter((c) => c.status === "Solved")
           .map((c) => ({

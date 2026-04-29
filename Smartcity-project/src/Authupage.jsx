@@ -17,7 +17,7 @@ const Authupage = () => {
   // REGISTER STATES
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [address, setaddress] = useState("");
+  const [address, setAddress] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -31,7 +31,7 @@ const Authupage = () => {
     }
 
     if (password !== confirmPassword) {
-      alert("Password not match");
+      alert("Passwords do not match!");
       return;
     }
 
@@ -60,11 +60,11 @@ const Authupage = () => {
 
         setName("");
         setPhone("");
-        setaddress("");
+        setAddress("");
         setPassword("");
         setConfirmPassword("");
       } else {
-        alert(data.response);
+        alert(data.message || "Registration failed");
       }
     } catch (error) {
       console.error(error);
@@ -75,6 +75,11 @@ const Authupage = () => {
   // ================= LOGIN =================
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    if (loginPhone.length !== 10) {
+      alert("Enter valid phone number");
+      return;
+    }
 
     if (!loginRole) {
       alert("Please select a role!");
@@ -92,6 +97,7 @@ const Authupage = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          
         },
         body: JSON.stringify(loginData),
       });
@@ -101,32 +107,30 @@ const Authupage = () => {
       if (data.status === true) {
         alert("Login Success");
 
-        // ✅ CLEAR OLD DATA (VERY IMPORTANT)
+        // CLEAR OLD DATA
         localStorage.clear();
 
-        // ✅ STORE NEW USER DATA
-        localStorage.setItem("userId", data.response._id);
-        localStorage.setItem("name", data.response.name);
-        localStorage.setItem("role", data.response.role);
+        // STORE USER DATA + TOKEN
+        localStorage.setItem("userId", data.userId);
+        localStorage.setItem("name", data.name);
+        localStorage.setItem("role", data.role);
+        localStorage.setItem("token", data.token);
 
-        // ✅ UPDATE CONTEXT
-        setCurrentUserName(data.response.name);
-        setRole(data.response.role);
+        // CONTEXT
+        setCurrentUserName(data.name);
+        setRole(data.role);
 
-        console.log("Logged in userId:", data.response._id);
+        console.log("Token:", data.token);
 
-       navigate("/app/");
-
+        navigate("/app/");
       } else {
         alert(data.message || "Invalid Credentials");
       }
-
     } catch (error) {
       console.error(error);
       alert("Server Error");
     }
 
-    // Clear fields
     setLoginPhone("");
     setLoginPassword("");
     setLoginRole("");
@@ -134,7 +138,6 @@ const Authupage = () => {
 
   return (
     <div className="main-container">
-
       <div className={`container ${active ? "active" : ""}`}>
 
         {/* LOGIN */}
@@ -144,7 +147,7 @@ const Authupage = () => {
 
             <div className="input-group">
               <input
-                type="number"
+                type="tel"
                 value={loginPhone}
                 onChange={(e) => setLoginPhone(e.target.value)}
                 required
@@ -196,7 +199,7 @@ const Authupage = () => {
 
             <div className="input-group">
               <input
-                type="number"
+                type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 required
@@ -208,7 +211,7 @@ const Authupage = () => {
               <input
                 type="text"
                 value={address}
-                onChange={(e) => setaddress(e.target.value)}
+                onChange={(e) => setAddress(e.target.value)}
                 required
               />
               <label>Your Address</label>

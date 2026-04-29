@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import DashboardCards from "../components/DashboardCards.jsx";
 import { ResponsivePie } from "@nivo/pie";
 import { ResponsiveBar } from "@nivo/bar";
+import authFetch from "../Utils/authFetch.js"
+
 
 const Dashboard = () => {
   const [complaints, setComplaints] = useState([]);
@@ -16,9 +18,9 @@ const Dashboard = () => {
   const fetchData = async () => {
     try {
       const [compRes, userRes, managerRes] = await Promise.all([
-        fetch("http://localhost:8011/complaint"),
-        fetch("http://localhost:8011/users"),
-        fetch("http://localhost:8011/manager"),
+        authFetch("http://localhost:8011/complaint"),
+        authFetch("http://localhost:8011/users"),
+        authFetch("http://localhost:8011/manager"),
       ]);
 
       const compData = await compRes.json();
@@ -35,26 +37,26 @@ const Dashboard = () => {
     }
   };
 
-  // ✅ TOTAL COUNTS
+  // TOTAL COUNTS
   const totalComplaints = complaints.length;
   const totalUsers = users.length;
   const totalManagers = managers.length;
 
-  // ✅ PIE DATA (ONLY TOTALS)
+  // PIE DATA (ONLY TOTALS)
   const chartData = [
     { id: "Complaints", value: totalComplaints },
     { id: "Users", value: totalUsers },
     { id: "Managers", value: totalManagers },
   ];
 
-  // ✅ BAR DATA (ONLY TOTALS)
+  // BAR DATA (ONLY TOTALS)
   const barData = [
     { category: "Complaints", value: totalComplaints },
     { category: "Users", value: totalUsers },
     { category: "Managers", value: totalManagers },
   ];
 
-  // ✅ CARDS
+  //  CARDS
   const cards = [
     { label: "Total Complaints", value: totalComplaints, color: "blue" },
     { label: "Total Users", value: totalUsers, color: "purple" },

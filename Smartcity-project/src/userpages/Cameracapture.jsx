@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from "react";
+import "./user.css"
 
 const Cameracapture = ({ setImage }) => {
   const videoRef = useRef(null);
@@ -20,7 +21,7 @@ const Cameracapture = ({ setImage }) => {
     }
   };
 
-  
+
   useEffect(() => {
     debugger
     if (cameraOn && videoRef.current && streamRef.current) {
@@ -28,7 +29,7 @@ const Cameracapture = ({ setImage }) => {
     }
   }, [cameraOn]);
 
- 
+
   const capturePhoto = () => {
     debugger
     const video = videoRef.current;
@@ -51,26 +52,24 @@ const Cameracapture = ({ setImage }) => {
   };
 
   return (
-    <div>
+    <div className="camera-wrapper">
 
       {!cameraOn && (
-        <button type="button" onClick={startCamera}>
+        <button type="button" className="camera-btn" onClick={startCamera}>
           Open Camera
         </button>
       )}
 
       {cameraOn && (
         <>
-          <video ref={videoRef} autoPlay width="200" />
-          <br />
-          <button type="button" onClick={capturePhoto}>
+          <video ref={videoRef} autoPlay className="camera-video" />
+          <button type="button" className="capture-btn" onClick={capturePhoto}>
             Capture
           </button>
         </>
       )}
 
       <canvas ref={canvasRef} style={{ display: "none" }} />
-
     </div>
   );
 };

@@ -2,13 +2,15 @@ import React, { useEffect, useState } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import "./admin.css";
 import ComplaintCard from "../components/ComplaintCard.jsx";
+import authFetch from "../Utils/authFetch.js"
+
 
 const Viewcomplaints = () => {
   const [complaints, setComplaints] = useState([]);
   const [managers, setManagers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 🕒 Time ago
+  // Time ago
   const getTimeAgo = (date) => {
     const now = new Date();
     const past = new Date(date);
@@ -21,12 +23,12 @@ const Viewcomplaints = () => {
     return past.toLocaleDateString();
   };
 
-  // 📦 Fetch data
+  // Fetch data
   const fetchData = async () => {
     try {
       const [complaintRes, managerRes] = await Promise.all([
-        fetch("http://localhost:8011/complaint"),
-        fetch("http://localhost:8011/manager"),
+        authFetch("http://localhost:8011/complaint"),
+        authFetch("http://localhost:8011/manager"),
       ]);
 
       const complaintData = await complaintRes.json();
@@ -45,12 +47,12 @@ const Viewcomplaints = () => {
     fetchData();
   }, []);
 
-  // ✅ Assign Manager
+  // Assign Manager
   const handleAssign = async (complaintId, managerId) => {
     try {
       const selectedManager = managers.find(m => m._id === managerId);
 
-      const res = await fetch(
+      const res = await authFetch(
         `http://localhost:8011/complaint/${complaintId}`,
         {
           method: "PUT",
@@ -87,7 +89,7 @@ const Viewcomplaints = () => {
           {complaints.map((c) => (
             <div key={c._id} className="card-wrapper">
 
-              {/* ✅ ORIGINAL CARD (UNCHANGED) */}
+              {/* ORIGINAL CARD (UNCHANGED) */}
               <ComplaintCard
                 image={c.proof}
                 title={c.title}
@@ -96,11 +98,11 @@ const Viewcomplaints = () => {
                 date={c.createdAt} // keep original
                 actions={
                   <>
-                    {/* 🕒 TIME AGO */}
+                    {/*  TIME AGO */}
                     <p className="timeago">
                       {getTimeAgo(c.createdAt)}
                     </p>
-                    {/* 🎯 ASSIGN DROPDOWN */}
+                    {/* ASSIGN DROPDOWN */}
                     {c.status === "Pending" && (
                       <select
                         className="assign-dropdown"
@@ -116,7 +118,7 @@ const Viewcomplaints = () => {
                         ))}
                       </select>
                     )}
-                    {/* 👤 ASSIGNED MANAGER */}
+                    {/*  ASSIGNED MANAGER */}
                     {c.manager_name && (
                       <p className="assigned">
                         Assigned to: <strong>{c.manager_name}</strong>

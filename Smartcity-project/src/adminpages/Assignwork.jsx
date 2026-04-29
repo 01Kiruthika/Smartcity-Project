@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./complaints.css";
 import ComplaintCard from "../components/ComplaintCard.jsx";
+import authFetch from "../Utils/authFetch.js"
+
 
 const Assignwork = () => {
   const [complaints, setComplaints] = useState([]);
@@ -28,7 +30,7 @@ const Assignwork = () => {
     try {
       setLoading(true);
 
-      const res = await fetch("http://localhost:8011/complaint");
+      const res = await authFetch("http://localhost:8011/complaint");
       const data = await res.json();
 
       setComplaints(data.response || []);
@@ -39,7 +41,7 @@ const Assignwork = () => {
     }
   };
 
-  // ✅ FILTER (IMPORTANT FIX)
+  //  FILTER (IMPORTANT FIX)
   const filteredComplaints =
     filter === "all"
       ? complaints
@@ -54,15 +56,15 @@ const Assignwork = () => {
 
       <h2>All Complaints</h2>
 
-      {/* ✅ FILTER DROPDOWN */}
+      {/*  FILTER DROPDOWN */}
       <select
-        className="filter-dropdown"
+        className="dropdown"
         value={filter}
         onChange={(e) => setFilter(e.target.value)}
       >
         <option value="all">All</option>
         <option value="Pending">Pending</option>
-        <option value="InProgress">InProgress</option> {/* ✅ FIXED */}
+        <option value="InProgress">InProgress</option> 
         <option value="Solved">Solved</option>
       </select>
 

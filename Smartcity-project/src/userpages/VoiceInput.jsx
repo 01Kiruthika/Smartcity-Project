@@ -49,11 +49,11 @@ const VoiceInput = ({ onTextDetected }) => {
 
     return (
         <div className="voice-container">
-            <button onClick={startListening} disabled={listening}>
+            <button onClick={startListening} className="Voice-start" disabled={listening}>
                 {listening ? "Listening..." : "Speak"}
             </button>
 
-            <button onClick={() => setLanguage(language === "en" ? "ta" : "en")}>
+            <button className="change-voice" onClick={() => setLanguage(language === "en" ? "ta" : "en")}>
                 {language === "en" ? "Turn on Tamil" : "Turn on English"}
             </button>
         </div>

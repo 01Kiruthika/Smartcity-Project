@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { ResponsivePie } from "@nivo/pie";
 import { ResponsiveBar } from "@nivo/bar";
 import DashboardCards from "../components/DashboardCards.jsx";
+import authFetch from "../Utils/authFetch.js"
+
 
 const Dashboard = () => {
   const [complaints, setComplaints] = useState([]);
@@ -15,7 +17,7 @@ const Dashboard = () => {
 
   const fetchData = async () => {
     try {
-      const res = await fetch("http://localhost:8011/complaint");
+      const res = await authFetch("http://localhost:8011/complaint");
       const data = await res.json();
 
       const assigned = (data.response || []).filter(
@@ -30,13 +32,13 @@ const Dashboard = () => {
     }
   };
 
-  // ✅ COUNTS
+  // COUNTS
   const total = complaints.length;
   // const pending = complaints.filter(c => c.status === "Pending").length;
   const inProgress = complaints.filter(c => c.status === "InProgress").length;
   const resolved = complaints.filter(c => c.status === "Solved").length;
 
-  // ✅ PIE DATA
+  //  PIE DATA
   const chartData = [
     { id: "Total", value: total },
     // { id: "Pending", value: pending },
@@ -44,7 +46,7 @@ const Dashboard = () => {
     { id: "Resolved", value: resolved },
   ];
 
-  // ✅ BAR DATA
+  //  BAR DATA
   const barData = [
     { status: "Total", value: total },
     // { status: "Pending", value: pending },
@@ -52,7 +54,8 @@ const Dashboard = () => {
     { status: "Resolved", value: resolved },
   ];
 
-  // ✅ CARDS
+  
+  //  CARDS
   const cards = [
     { label: "Assigned Complaints", value: total, color: "blue" },
     { label: "In Progress", value: inProgress, color: "purple" },

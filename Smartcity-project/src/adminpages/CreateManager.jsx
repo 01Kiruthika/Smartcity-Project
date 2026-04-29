@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./admin.css";
 import { useLocation, useNavigate } from "react-router-dom";
+import authFetch from "../Utils/authFetch.js"
+
 
 const CreateManager = () => {
   const location = useLocation();
@@ -18,7 +20,7 @@ const CreateManager = () => {
 
   const [loading, setLoading] = useState(false);
 
-  // ✅ Fill form when editing
+  //  Fill form when editing
   useEffect(() => {
     if (editData) {
       setFormData({
@@ -49,11 +51,24 @@ const CreateManager = () => {
     try {
       setLoading(true);
 
+
+      const sendData = { ...formData };
+      if (!sendData.password) {
+        delete sendData.password;
+      }
+
       let res;
+
+     
+
+      if (!editData && !formData.password) {
+        alert("Password is required for new manager");
+        return;
+      }
 
       // UPDATE
       if (editData) {
-        res = await fetch(`http://localhost:8011/manager/${editData._id}`, {
+        res = await authFetch(`http://localhost:8011/manager/${editData._id}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json"
@@ -62,7 +77,7 @@ const CreateManager = () => {
         });
       }
       else {
-        res = await fetch("http://localhost:8011/manager", {
+        res = await authFetch("http://localhost:8011/manager", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData)

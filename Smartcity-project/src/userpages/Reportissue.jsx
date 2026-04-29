@@ -5,10 +5,11 @@ import "./user.css";
 import Cameracapture from "./Cameracapture.jsx";
 import VoiceInput from "./VoiceInput.jsx";
 import { UserContext } from "../UserContext.jsx";
+import authFetch from "../Utils/authFetch.js"
 
 const Reportissue = () => {
   const { currentUserName } = useContext(UserName);
-  const { userId } = useContext(UserContext); // ✅ GLOBAL USER
+  const { userId } = useContext(UserContext);
   const locationData = useLocation();
   const navigate = useNavigate();
 
@@ -19,7 +20,7 @@ const Reportissue = () => {
 
   const fileInputRef = useRef(null);
 
-  // ✅ LOAD EDIT DATA
+  //  LOAD EDIT DATA
   useEffect(() => {
     if (locationData.state) {
       const c = locationData.state;
@@ -34,19 +35,22 @@ const Reportissue = () => {
       setImage("");
       setEditId(null);
     }
-  }, [locationData.state, userId]); // ✅ FIXED
+  }, [locationData.state]);
 
-  // ✅ SUBMIT FUNCTION
+  // SUBMIT FUNCTION (WITH TOKEN)
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!userId) {
-      alert("User not logged in");
+    const token = localStorage.getItem("token"); // GET TOKEN
+
+    if (!userId || !token) {
+      alert("Session expired. Please login again.");
+      navigate("/");
       return;
     }
 
     const complaintData = {
-      user_id: userId,
+      user_id: userId, // (optional if using token in backend)
       title,
       location,
       proof: image,
@@ -62,18 +66,20 @@ const Reportissue = () => {
         method = "PUT";
       }
 
-      const response = await fetch(url, {
+      const response = await authFetch(url, {
         method,
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify(complaintData),
       });
 
+      
       const data = await response.json();
 
       if (response.ok) {
-        alert(editId ? "Updated Successfully" : "Complaint Submitted Successfully");
+        alert(
+          editId
+            ? "Complaint Updated Successfully"
+            : "Complaint Submitted Successfully"
+        );
 
         // RESET FORM
         setTitle("");
@@ -87,11 +93,10 @@ const Reportissue = () => {
 
         navigate("/app/mycomplaints");
       } else {
-        alert(data.message || "Error");
+        alert(data.message || "Something went wrong");
       }
-
     } catch (error) {
-      console.error(error);
+      console.error("Submit Error:", error);
       alert("Server Error");
     }
   };
@@ -104,11 +109,10 @@ const Reportissue = () => {
 
       <div className="report-wrapper">
         <div className="report-card">
-
           <form onSubmit={handleSubmit}>
             <h3 className="report-subtitle">Describe the Problem</h3>
 
-            {/* 🎤 Voice Input */}
+            {/* Voice Input */}
             <div className="voice-row">
               <VoiceInput onTextDetected={(text) => setTitle(text)} />
             </div>
@@ -135,13 +139,11 @@ const Reportissue = () => {
 
             {/* CAMERA */}
             <div className="camera-section">
-              <p className="camera-text">
-                Upload proof of the issue
-              </p>
+              <p className="camera-text">Upload proof of the issue</p>
 
               <Cameracapture setImage={setImage} />
 
-              {/* PREVIEW */}
+              {/* IMAGE PREVIEW */}
               {image && (
                 <img
                   src={image}
@@ -152,7 +154,7 @@ const Reportissue = () => {
                     height: "120px",
                     objectFit: "cover",
                     borderRadius: "8px",
-                    marginTop: "10px"
+                    marginTop: "10px",
                   }}
                 />
               )}
@@ -162,9 +164,7 @@ const Reportissue = () => {
             <button type="submit" className="submit-btn">
               {editId ? "Update Issue" : "Submit Issue"}
             </button>
-
           </form>
-
         </div>
       </div>
     </>

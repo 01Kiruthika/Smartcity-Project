@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import "./admin.css";
 import { useNavigate } from "react-router-dom";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import authFetch from "../Utils/authFetch.js"
+
 
 const Manageusers = () => {
   const [selectedType, setSelectedType] = useState("all");
@@ -20,8 +22,8 @@ const Manageusers = () => {
       setLoading(true);
 
       const [userRes, managerRes] = await Promise.all([
-        fetch("http://localhost:8011/users"),
-        fetch("http://localhost:8011/manager"),
+        authFetch("http://localhost:8011/users"),
+        authFetch("http://localhost:8011/manager"),
       ]);
 
       const userData = await userRes.json();
@@ -36,13 +38,13 @@ const Manageusers = () => {
     }
   };
 
-  // ✅ DELETE MANAGER
+  //  DELETE MANAGER
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this manager?");
     if (!confirmDelete) return;
 
     try {
-      const res = await fetch(`http://localhost:8011/manager/${id}`, {
+      const res = await authFetch(`http://localhost:8011/manager/${id}`, {
         method: "DELETE",
       });
 
@@ -60,12 +62,12 @@ const Manageusers = () => {
       alert("Server error");
     }
   };
-  // ✅ EDIT MANAGER
+  // EDIT MANAGER
   const handleEdit = (manager) => {
     navigate("/app/CreateManager", { state: { manager } });
   };
 
-  // 🔁 Combine
+  //  Combine
   const combinedData = [
     ...users.map((u) => ({ ...u, type: "User" })),
     ...managers.map((m) => ({ ...m, type: "Manager" })),

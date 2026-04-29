@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import ReactDOM from "react-dom";
 import {
     FaMapMarkerAlt,
     FaCalendarAlt,
@@ -66,53 +67,52 @@ const ComplaintCard = ({
             </div>
 
             {/* MODAL */}
-            {open && (
-                <div className="modal-overlay" onClick={() => setOpen(false)}>
-
-                    <div
-                        className="modal-content"
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        <button
-                            className="close-icons"
-                            onClick={() => setOpen(false)}
+            {open &&
+                ReactDOM.createPortal(
+                    <div className="modal-overlay" onClick={() => setOpen(false)}>
+                        <div
+                            className="modal-content"
+                            onClick={(e) => e.stopPropagation()}
                         >
-                            <FaTimes />
-                        </button>
+                            <button
+                                className="close-icons"
+                                onClick={() => setOpen(false)}
+                            >
+                                <FaTimes />
+                            </button>
 
-                        <h2 className="modal-title">{title}</h2>
+                            <h2 className="modal-title">{title}</h2>
 
-                        <img
-                            src={image || "https://via.placeholder.com/300"}
-                            alt="full"
-                            className="modal-img"
-                        />
+                            <img
+                                src={image || "https://via.placeholder.com/300"}
+                                alt="full"
+                                className="modal-img"
+                            />
 
-                        <p className="modal-info">
-                            <FaMapMarkerAlt /> {location}
-                        </p>
+                            <p className="modal-info">
+                                <FaMapMarkerAlt /> {location}
+                            </p>
 
-                        <p className="modal-info">
-                            <FaCalendarAlt /> {new Date(date).toLocaleDateString()}
-                        </p>
+                            <p className="modal-info">
+                                <FaCalendarAlt /> {new Date(date).toLocaleDateString()}
+                            </p>
 
-                        <p className="modal-status">
-                            Status:
-                            <span style={{ color: getStatusColor(status) }}>
-                                {" "}{status}
-                            </span>
-                        </p>
+                            <p className="modal-status">
+                                Status:
+                                <span style={{ color: getStatusColor(status) }}>
+                                    {" "}{status}
+                                </span>
+                            </p>
 
-                        {/* ✅ ACTIONS INSIDE MODAL */}
-                        {actions && (
-                            <div className="modal-actions">
-                                {actions}
-                            </div>
-                        )}
-
-                    </div>
-                </div>
-            )}
+                            {actions && (
+                                <div className="modal-actions">
+                                    {actions}
+                                </div>
+                            )}
+                        </div>
+                    </div>,
+                    document.body
+                )}
         </>
     );
 };

@@ -62,7 +62,7 @@ const Header = () => {
     name: currentUserName,
     image: logo,
   });
-  
+
 
 
   useEffect(() => {
@@ -103,7 +103,14 @@ const Header = () => {
 
   return (
     <header>
+
+      <div className="company-name">
+        <label for="click-bars">
+          <i class="fa fa-bars" aria-hidden="true"></i>
+        </label>
+      </div>
       <h2>Welcome, {currentUserName}</h2>
+
 
       <div className="profile-container" ref={profileRef}>
 

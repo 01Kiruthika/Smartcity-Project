@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ResponsivePie } from "@nivo/pie";
 import { ResponsiveBar } from "@nivo/bar";
 import "./user.css";
+import authFetch from "../Utils/authFetch.js"
 
 
 const Dashboard = () => {
@@ -13,7 +14,7 @@ const Dashboard = () => {
     try {
       const userId = localStorage.getItem("userId");
 
-      const res = await fetch("http://localhost:8011/complaint");
+      const res = await authFetch("http://localhost:8011/complaint");
       const data = await res.json();
 
       //  Filter only logged-in user's complaints
