@@ -685,9 +685,7 @@
 }
 
 /* Target by first character fallback */
-.cm-message::first-letter {}
 
-/* For error messages starting with ❌ - use specific targeting since CSS doesn't support :contains() */
 .cm-message {
     color: hsl(0 84% 60%);
     background: hsl(0 84% 95% / 0.8);
