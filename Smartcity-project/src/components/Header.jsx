@@ -8,10 +8,8 @@ import "../App.css";
 const initialState = {
   showProfile: false,
   editMode: false,
-  passwordMode: false,
-
   name: "",
-  phone: "0000000000",
+  phone: "",
   image: null,
 };
 
@@ -21,10 +19,7 @@ function reducer(state, action) {
       return { ...state, showProfile: !state.showProfile };
 
     case "EDIT_MODE":
-      return { ...state, editMode: true, passwordMode: false };
-
-    // case "PASSWORD_MODE":
-    //   return { ...state, passwordMode: true, editMode: false };
+      return { ...state, editMode: true };
 
     case "SET_NAME":
       return { ...state, name: action.payload };
@@ -35,14 +30,8 @@ function reducer(state, action) {
     case "SET_IMAGE":
       return { ...state, image: action.payload };
 
-    // case "SET_OLD_PASSWORD":
-    //   return { ...state, oldPassword: action.payload };
-
-    // case "SET_NEW_PASSWORD":
-    //   return { ...state, newPassword: action.payload };
-
     case "CLOSE_ALL":
-      return { ...state, editMode: false, passwordMode: false };
+      return { ...state, editMode: false };
 
     case "CLOSE_PROFILE":
       return { ...state, showProfile: false };
@@ -51,21 +40,24 @@ function reducer(state, action) {
       return state;
   }
 }
-
 const Header = () => {
   const { currentUserName } = useContext(UserName);
   const navigate = useNavigate();
   const profileRef = useRef();
 
+  const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("token");
+
   const [state, dispatch] = useReducer(reducer, {
     ...initialState,
-    name: currentUserName,
+    name: "",
+    phone: "",
     image: logo,
   });
 
-
-
   useEffect(() => {
+    fetchUserDetails();
+
     const handleClickOutside = (event) => {
       if (profileRef.current && !profileRef.current.contains(event.target)) {
         dispatch({ type: "CLOSE_PROFILE" });
@@ -78,45 +70,115 @@ const Header = () => {
     };
   }, []);
 
+  const fetchUserDetails = async () => {
+    try {
+      const res = await fetch(`http://localhost:8011/users`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-  const handleEditProfile = () => {
-    dispatch({ type: "EDIT_MODE" });
+      const data = await res.json();
+
+      // 🔍 DEBUG (VERY IMPORTANT)
+      console.log("API Response:", data);
+
+      // ✅ HANDLE DIFFERENT RESPONSE STRUCTURES
+      const users = data.response || data.users || data;
+
+      if (!Array.isArray(users)) {
+        console.error("Users is not an array:", users);
+        return;
+      }
+
+      const currentUser = users.find(
+        (u) => u._id === userId
+      );
+
+      if (currentUser) {
+        dispatch({ type: "SET_NAME", payload: currentUser.name });
+        dispatch({ type: "SET_PHONE", payload: currentUser.phonenumber });
+
+        if (currentUser.profile_image) {
+          dispatch({
+            type: "SET_IMAGE",
+            payload: currentUser.profile_image,
+          });
+        }
+      }
+
+    } catch (err) {
+      console.error("Error fetching user:", err);
+    }
   };
+  
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
 
-  const handleChangePassword = () => {
-    dispatch({ type: "PASSWORD_MODE" });
+    try {
+      const res = await fetch(`http://localhost:8011/user/${userId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: state.name,
+          phonenumber: state.phone,
+          profile_image: state.image,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data.status) {
+        alert("Profile updated successfully ");
+        dispatch({ type: "CLOSE_ALL" });
+
+        fetchUserDetails(); // refresh
+      } else {
+        alert(data.message || "Update failed ❌");
+      }
+    } catch (err) {
+      console.error("Update error:", err);
+    }
   };
 
   const handleLogout = () => {
+    localStorage.clear();
     navigate("/");
   };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
       dispatch({
         type: "SET_IMAGE",
-        payload: URL.createObjectURL(file),
+        payload: reader.result,
       });
-    }
+    };
+
+    reader.readAsDataURL(file);
   };
 
+  // ✅ RETURN MUST BE INSIDE COMPONENT
   return (
     <header>
-
       <div className="company-name">
-        <label for="click-bars">
-          <i class="fa fa-bars" aria-hidden="true"></i>
+        <label htmlFor="click-bars">
+          <i className="fa fa-bars"></i>
         </label>
       </div>
-      <h2>Welcome, {currentUserName}</h2>
 
+      <h2>Welcome, {state.name || currentUserName}</h2>
 
       <div className="profile-container" ref={profileRef}>
-
-
         <img
-          src={state.image}
+          src={state.image || logo}
           alt="user"
           className="profile-icon"
           onClick={() => dispatch({ type: "TOGGLE_PROFILE" })}
@@ -124,9 +186,8 @@ const Header = () => {
 
         <div className={`profile-dropdown ${state.showProfile ? "active" : ""}`}>
 
-
           <div className="profile-header">
-            <img src={state.image} alt="user" className="avatar" />
+            <img src={state.image || logo} alt="user" className="avatar" />
             <div>
               <h4>{state.name}</h4>
               <p>{state.phone}</p>
@@ -135,41 +196,34 @@ const Header = () => {
 
           <hr />
 
+          {!state.editMode && (
+            <div className="profile-menu">
+              <button onClick={() => dispatch({ type: "EDIT_MODE" })}>
+                Edit Profile
+              </button>
 
-          {!state.editMode && !state.passwordMode && (
-            <div className="menu">
-              <button onClick={handleEditProfile}> Edit Profile</button>
-              {/* <button onClick={handleChangePassword}> Change Password</button> */}
               <button className="logout" onClick={handleLogout}>
-                <img src={logout} alt="" />   Logout
+                <img src={logout} alt="" /> Logout
               </button>
             </div>
           )}
-
 
           {state.editMode && (
             <div className="form-section">
               <h4>Edit Profile</h4>
 
               <div className="avatar-upload">
-                <img src={state.image} alt="preview" />
-                <input type="file"
-                  onChange={handleImageChange}
-                />
+                <img src={state.image || logo} alt="preview" />
+                <input type="file" onChange={handleImageChange} />
               </div>
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  dispatch({ type: "CLOSE_ALL" });
-                }}
-              >
+
+              <form onSubmit={handleUpdateProfile}>
                 <input
                   type="text"
                   value={state.name}
                   onChange={(e) =>
                     dispatch({ type: "SET_NAME", payload: e.target.value })
                   }
-                  placeholder="Name"
                   required
                 />
 
@@ -179,61 +233,16 @@ const Header = () => {
                   onChange={(e) =>
                     dispatch({ type: "SET_PHONE", payload: e.target.value })
                   }
-                  placeholder="Phone Number"
                   required
                 />
 
                 <div className="btn-group">
-                  <button type="submit">
-                    Save
-                  </button>
-                  <button type="submit">
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            </div>
-          )}
+                  <button type="submit">Save</button>
 
-          {/* CHANGE PASSWORD */}
-          {state.passwordMode && (
-            <div className="form-section">
-              <h4>Change Password</h4>
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  dispatch({ type: "CLOSE_ALL" });
-                }}
-              >
-                <input
-                  type="password"
-                  placeholder="Old Password"
-                  onChange={(e) =>
-                    dispatch({
-                      type: "SET_OLD_PASSWORD",
-                      payload: e.target.value,
-                    })
-                  }
-                  required
-                />
-
-                <input
-                  type="password"
-                  placeholder="New Password"
-                  onChange={(e) =>
-                    dispatch({
-                      type: "SET_NEW_PASSWORD",
-                      payload: e.target.value,
-                    })
-                  }
-                  required
-                />
-
-                <div className="btn-group">
-                  <button type="submit">
-                    Update
-                  </button>
-                  <button type="submit">
+                  <button
+                    type="button"
+                    onClick={() => dispatch({ type: "CLOSE_ALL" })}
+                  >
                     Cancel
                   </button>
                 </div>

@@ -784,3 +784,204 @@ body {
 
 
 }
+
+
+
+
+/* ===== IMPORTS ===== */
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:wght@400;500&display=swap');
+
+/* ===== VARIABLES ===== */
+:root {
+    --bg: #0f1117;
+    --surface: #181c27;
+    --border: #252a38;
+    --accent: #4f8dff;
+    --accent-glow: rgba(79, 141, 255, 0.18);
+    --text-primary: #e8eaf0;
+    --text-muted: #7a8099;
+    --pending: #f5a623;
+    --inprogress: #4f8dff;
+    --solved: #2ecc71;
+    --radius: 14px;
+    --gap: 24px;
+}
+
+/* ===== RESET ===== */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+}
+
+/* ===== PAGE WRAPPER ===== */
+.trackstatus {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+    animation: fadeSlideUp 0.5s ease both;
+}
+
+/* ===== HEADING ===== */
+.trackstatus h2 {
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--text-primary);
+    margin-bottom: 32px;
+    position: relative;
+    /* display: inline-block; */
+}
+
+.trackstatus h2::after {
+    content: '';
+    display: block;
+    height: 3px;
+    width: 48px;
+    background: var(--accent);
+    border-radius: 99px;
+    margin-top: 8px;
+    box-shadow: 0 0 10px var(--accent-glow);
+}
+
+/* ===== DROPDOWN ===== */
+.track-dropdown {
+    appearance: none;
+    -webkit-appearance: none;
+    background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234f8dff' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 14px center;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text-primary);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 10px 15px;
+    cursor: pointer;
+    margin-bottom: 36px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 180px;
+    display: block;
+    margin: 0 auto 36px;
+
+}
+
+.track-dropdown:hover,
+.track-dropdown:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+    outline: none;
+}
+
+.track-dropdown option {
+    background: var(--surface);
+    color: var(--text-primary);
+}
+
+/* ===== CARD GRID ===== */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--gap);
+}
+
+.card-wrapper {
+    animation: fadeSlideUp 0.45s ease both;
+}
+
+/* Stagger children */
+.card-wrapper:nth-child(1) {
+    animation-delay: 0.05s;
+}
+
+.card-wrapper:nth-child(2) {
+    animation-delay: 0.10s;
+}
+
+.card-wrapper:nth-child(3) {
+    animation-delay: 0.15s;
+}
+
+.card-wrapper:nth-child(4) {
+    animation-delay: 0.20s;
+}
+
+.card-wrapper:nth-child(5) {
+    animation-delay: 0.25s;
+}
+
+.card-wrapper:nth-child(6) {
+    animation-delay: 0.30s;
+}
+
+/* ===== EMPTY / LOADING STATES ===== */
+.loading,
+.no-data {
+    font-size: 1rem;
+    color: var(--text-muted);
+    text-align: center;
+    padding: 64px 24px;
+    letter-spacing: 0.01em;
+}
+
+.loading::before {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 36px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    margin: 0 auto 16px;
+    animation: spin 0.8s linear infinite;
+}
+
+.no-data::before {
+    content: '📭';
+    display: block;
+    font-size: 2.4rem;
+    margin-bottom: 12px;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+    .trackstatus {
+        padding: 32px 16px 60px;
+    }
+
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .track-dropdown {
+        width: 100%;
+    }
+}

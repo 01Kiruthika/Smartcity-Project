@@ -824,7 +824,7 @@ label {
   }
 
   .company-name {
-    border: 2px solid;
+    /* border: 2px solid; */
     width: auto;
     align-self: center;
   }
@@ -883,5 +883,96 @@ label {
   *::after {
     transition: none !important;
     animation: none !important;
+  }
+}
+
+/* ─── Footer ──────────────────────────────────── */
+
+.footer {
+  background: var(--accent);
+  padding: 18px 40px;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.footer::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 80% at 10% 50%, rgba(255, 255, 255, 0.07) 0%, transparent 70%),
+    repeating-linear-gradient(-45deg,
+      transparent,
+      transparent 18px,
+      rgba(255, 255, 255, 0.03) 18px,
+      rgba(255, 255, 255, 0.03) 19px);
+  pointer-events: none;
+}
+
+.footer-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.75);
+  letter-spacing: 0.02em;
+  position: relative;
+  line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+  .footer {
+    padding: 16px 20px;
+  }
+
+  .footer-text {
+    font-size: 0.75rem;
+  }
+}
+
+/* ─── Profile Menu ────────────────────────────── */
+
+.profile-menu {
+  /* border: 5px solid; */
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px;
+  flex-wrap: wrap;
+}
+
+.profile-menu button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  background: var(--accent);
+  color: #fff;
+}
+
+.profile-menu .logout img {
+  width: 16px;
+  height: 16px;
+  filter: brightness(0) invert(1);
+}
+
+/* ─── Responsive ──────────────────────────────── */
+
+@media (max-width: 600px) {
+  .profile-menu {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .profile-menu button {
+    width: 100%;
+    justify-content: center;
   }
 }

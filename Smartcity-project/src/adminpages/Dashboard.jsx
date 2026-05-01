@@ -77,7 +77,7 @@ const Dashboard = () => {
         <div className="col-md-6">
           <div style={{ height: "300px" }}>
             <h3 style={{ textAlign: "center" }}>
-              System Overview
+              Overview
             </h3>
 
             <ResponsivePie
@@ -98,7 +98,7 @@ const Dashboard = () => {
         {/* BAR CHART */}
         <div className="col-md-6">
           <h3 style={{ textAlign: "center" }}>
-            System Comparison
+            Stauts
           </h3>
 
           <div style={{ height: "300px" }}>
