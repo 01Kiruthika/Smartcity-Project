@@ -81,13 +81,15 @@ const ComplaintCard = ({
                                 <FaTimes />
                             </button>
 
-                            <h2 className="modal-title">{title}</h2>
+
 
                             <img
                                 src={image || "https://via.placeholder.com/300"}
                                 alt="full"
                                 className="modal-img"
                             />
+
+                            <h2 className="modal-title">{title}</h2>
 
                             <p className="modal-info">
                                 <FaMapMarkerAlt /> {location}

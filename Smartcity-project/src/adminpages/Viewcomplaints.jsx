@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { FaEdit, FaTrash } from "react-icons/fa";
 import "./admin.css";
 import ComplaintCard from "../components/ComplaintCard.jsx";
-import authFetch from "../Utils/authFetch.js"
-
+import authFetch from "../Utils/authFetch.js";
+import emailjs from "@emailjs/browser";
 
 const Viewcomplaints = () => {
   const [complaints, setComplaints] = useState([]);
@@ -37,7 +36,7 @@ const Viewcomplaints = () => {
       setComplaints(complaintData.response || []);
       setManagers(managerData.response || []);
     } catch (err) {
-      console.error(err);
+      console.error("Fetch error:", err);
     } finally {
       setLoading(false);
     }
@@ -47,10 +46,22 @@ const Viewcomplaints = () => {
     fetchData();
   }, []);
 
-  // Assign Manager
+  // Assign Manager + Send Email
   const handleAssign = async (complaintId, managerId) => {
     try {
+      if (!managerId) return;
+
       const selectedManager = managers.find(m => m._id === managerId);
+      const selectedComplaint = complaints.find(c => c._id === complaintId);
+
+      console.log("Selected Manager:", selectedManager);
+      console.log("Manager Email:", selectedManager?.email);
+
+      // 🚨 SAFETY CHECK (prevents 422 error)
+      if (!selectedManager || !selectedManager.email) {
+        alert("Manager email missing ❌ (Fix backend API)");
+        return;
+      }
 
       const res = await authFetch(
         `http://localhost:8011/complaint/${complaintId}`,
@@ -59,21 +70,45 @@ const Viewcomplaints = () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             manager_id: managerId,
-            manager_name: selectedManager?.name,
+            manager_name: selectedManager.name,
             status: "InProgress",
           }),
         }
       );
 
       if (res.ok) {
-        alert("Manager assigned successfully");
-        fetchData(); // refresh
+
+        try {
+          // 🔥 EMAILJS CALL
+          await emailjs.send(
+            "service_909i4zn",
+            "template_1y0a2fi",    
+            {
+              name: selectedManager.name,
+              email: selectedManager.email, // MUST exist
+              title: selectedComplaint.title,
+              message: `${selectedComplaint.title} - ${selectedComplaint.location}`,
+              complaint_id: selectedComplaint._id,
+            },
+            "zqUfWoQbJx9clo0Qp"      // replace
+          );
+
+          alert("Manager assigned Successfully!!!");
+
+        } catch (emailError) {
+          console.error("Email failed:", emailError);
+          alert("Assigned but Email failed ");
+        }
+
+        fetchData();
+
       } else {
-        alert("Failed to assign");
+        alert("Assignment failed ");
       }
 
     } catch (err) {
-      console.error(err);
+      console.error("Error:", err);
+      alert("Something went wrong");
     }
   };
 
@@ -85,32 +120,34 @@ const Viewcomplaints = () => {
         <p>Loading...</p>
       ) : (
         <div className="card-grid">
-
           {complaints.map((c) => (
             <div key={c._id} className="card-wrapper">
 
-              {/* ORIGINAL CARD (UNCHANGED) */}
               <ComplaintCard
                 image={c.proof}
                 title={c.title}
                 status={c.status}
                 location={c.location}
-                date={c.createdAt} // keep original
+                date={c.createdAt}
                 actions={
                   <>
-                    {/*  TIME AGO */}
+                    {/* Time Ago */}
                     <p className="timeago">
                       {getTimeAgo(c.createdAt)}
                     </p>
-                    {/* ASSIGN DROPDOWN */}
+
+                    {/* Assign Dropdown */}
                     {c.status === "Pending" && (
                       <select
                         className="assign-dropdown"
+                        defaultValue=""
                         onChange={(e) =>
                           handleAssign(c._id, e.target.value)
                         }
                       >
-                        <option value="">Assign Manager</option>
+                        <option value="" disabled>
+                          Assign Manager
+                        </option>
                         {managers.map((m) => (
                           <option key={m._id} value={m._id}>
                             {m.name}
@@ -118,26 +155,19 @@ const Viewcomplaints = () => {
                         ))}
                       </select>
                     )}
-                    {/*  ASSIGNED MANAGER */}
+
+                    {/* Assigned Manager */}
                     {c.manager_name && (
                       <p className="assigned">
                         Assigned to: <strong>{c.manager_name}</strong>
                       </p>
                     )}
-
-
                   </>
                 }
               />
 
-
-
-
-
-
             </div>
           ))}
-
         </div>
       )}
     </div>
@@ -145,3 +175,30 @@ const Viewcomplaints = () => {
 };
 
 export default Viewcomplaints;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

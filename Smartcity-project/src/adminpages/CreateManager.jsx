@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./admin.css";
 import { useLocation, useNavigate } from "react-router-dom";
-import authFetch from "../Utils/authFetch.js"
-
+import authFetch from "../Utils/authFetch.js";
+import emailjs from "@emailjs/browser";
 
 const CreateManager = () => {
   const location = useLocation();
@@ -20,7 +20,7 @@ const CreateManager = () => {
 
   const [loading, setLoading] = useState(false);
 
-  //  Fill form when editing
+  // Fill form when editing
   useEffect(() => {
     if (editData) {
       setFormData({
@@ -28,7 +28,7 @@ const CreateManager = () => {
         address: editData.address || "",
         phonenumber: editData.phonenumber || "",
         email: editData.email || "",
-        password: "" // keep empty
+        password: ""
       });
     }
   }, [editData]);
@@ -48,23 +48,15 @@ const CreateManager = () => {
       return;
     }
 
+    if (!editData && !formData.password) {
+      alert("Password is required for new manager");
+      return;
+    }
+
     try {
       setLoading(true);
 
-
-      const sendData = { ...formData };
-      if (!sendData.password) {
-        delete sendData.password;
-      }
-
       let res;
-
-     
-
-      if (!editData && !formData.password) {
-        alert("Password is required for new manager");
-        return;
-      }
 
       // UPDATE
       if (editData) {
@@ -75,7 +67,8 @@ const CreateManager = () => {
           },
           body: JSON.stringify(formData)
         });
-      }
+      } 
+      // CREATE
       else {
         res = await authFetch("http://localhost:8011/manager", {
           method: "POST",
@@ -84,12 +77,40 @@ const CreateManager = () => {
         });
       }
 
-      const data = await res.json();
+      // safer JSON handling
+      let data = {};
+      try {
+        data = await res.json();
+      } catch {}
 
       if (res.ok) {
-        alert(editData ? "Manager updated successfully" : "Manager created successfully");
 
-        navigate("/app/users"); // redirect back
+        // Send email only when creating
+        if (!editData) {
+          try {
+            await emailjs.send(
+              "service_909i4zn",
+              "template_t64qt6k",
+              {
+                name: formData.name,
+                email: formData.email,
+                password: formData.password
+              },
+              "zqUfWoQbJx9clo0Qp"
+            );
+
+            alert("Manager created & Welcome email sent ✅");
+
+          } catch (emailError) {
+            console.error("Email failed:", emailError);
+            alert("Manager created but email failed ❌");
+          }
+        } else {
+          alert("Manager updated successfully");
+        }
+
+        navigate("/app/users");
+
       } else {
         alert(data.message || "Error");
       }
@@ -104,7 +125,6 @@ const CreateManager = () => {
 
   return (
     <div className="cm-container">
-
       <div className="cm-card">
         <h2 className="cm-title">
           {editData ? "Edit Manager" : "Create Manager"}
